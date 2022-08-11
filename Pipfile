@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+djangorestframework = "*"
+requests = "*"
+whitenoise = "*"
+djoser = "*"
+djangorestframework-simplejwt = "*"
+django-filter = "*"
+mysql-connector-python = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
