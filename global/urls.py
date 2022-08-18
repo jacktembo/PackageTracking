@@ -15,10 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from . import views
 
 admin.AdminSite.site_header = 'Package Tracking'
 admin.AdminSite.index_title = 'Welcome To All1Zed Package Tracking System'
 
 urlpatterns = [
-
+    path('packages', views.PackageList.as_view()),
+    path('packages/<tracking_number>', views.PackageDetail.as_view()),
 ]

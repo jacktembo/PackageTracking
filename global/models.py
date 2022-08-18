@@ -5,6 +5,14 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
+def calculate_tracking_number():
+    alphabet = string.digits
+    digits = ''.join(secrets.choice(alphabet) for i in range(10))
+    # s = "".join(self.vehicle.courier_company.company_name.split())
+    tracking_number = digits
+    return tracking_number
+
+
 class CourierCompany(models.Model):
     """A company that owns vehicle(s)
 
@@ -36,7 +44,7 @@ class Vehicle(models.Model):
     courier_company = models.ForeignKey(CourierCompany, on_delete=models.CASCADE)
     vehicle_full_name = models.CharField(max_length=255)
     departure_time = models.TimeField(default=datetime.now().time())
-    transit_time = models.TimeField(default=datetime.now().time())
+    transit_time = models.IntegerField()
 
     def __str__(self):
         return self.vehicle_full_name
@@ -45,25 +53,33 @@ class Vehicle(models.Model):
         verbose_name_plural = 'Vehicles'
 
 
+
 class Package(models.Model):
     """Package to be tracked"""
-    tracking_number = models.CharField(max_length=255)
-    status = models.CharField(max_length=255)
+    tracking_number = models.CharField(max_length=255, unique=True, default=calculate_tracking_number(), editable=False)
     receiver_name = models.CharField(max_length=255)
     receiver_phone_number = models.CharField(max_length=255)
     sender_phone_number = models.CharField(max_length=255)
-    delivery_destination = models.CharField(max_length=255)
+    delivery_town = models.CharField(max_length=255)
+    starting_town = models.CharField(max_length=255, default='Lusaka')
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
     number_of_packages = models.IntegerField(default=1)
     price = models.FloatField(default=0.0)
-    departure_date = models.DateField()
-    departure_time = models.DateField()
-    date_time_received = models.DateTimeField(auto_now_add=True)
-    location = models.CharField(max_length=255, default="0.0, 0.0")
+    departure_date = models.DateField(blank=True, null=True)
+    departure_time = models.TimeField()
+    processed_date_time = models.DateTimeField(auto_now_add=True) # Time package was processed.
+    transit_date_time = models.DateTimeField(blank=True, null=True) # Time vehicle started moving.
+    ready_for_collection_date_time = models.DateTimeField(blank=True, null=True) # Time package becomes ready for collection.
+    collected_date_time = models.DateTimeField(blank=True, null=True) # Time package was collected.
+    processed_status = models.BooleanField(default=True, blank=True, null=True)
+    transit_status = models.BooleanField(default=False, blank=True, null=True)
+    ready_for_collection_status = models.BooleanField(default=False, blank=True, null=True)
+    collected_status = models.BooleanField(default=False, blank=True, null=True)
+    current_coordinates = models.CharField(max_length=255, default="0.0, 0.0")
 
-    def save(self, *args, **kwargs):
-        alphabet = string.digits
-        digits = ''.join(secrets.choice(alphabet) for i in range(8))
-        s = "".join(self.vehicle.courier_company.company_name.split())
-        self.tracking_number = f'{s[:2]}' + digits
-        super(Package, self).save(*args, **kwargs)
+    def __str__(self):
+        return f"{self.tracking_number} ---> {self.starting_town} - {self.delivery_town}"
+
+
+
+

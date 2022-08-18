@@ -1,0 +1,21 @@
+from rest_framework import serializers
+
+from .models import Package
+
+
+class PackageSerializer(serializers.ModelSerializer):
+    package_tracking_number = serializers.SerializerMethodField(method_name='tracking_number')
+
+    def tracking_number(self, package: Package):
+        return package.tracking_number
+
+    class Meta:
+        model = Package
+        fields = [
+            'package_tracking_number', 'receiver_name', 'receiver_phone_number', 'sender_phone_number',
+            'delivery_town', 'starting_town', 'vehicle', 'number_of_packages',
+            'price', 'departure_date', 'departure_time', 'processed_date_time',
+            'transit_date_time', 'ready_for_collection_date_time', 'collected_date_time',
+            'processed_status', 'transit_status', 'ready_for_collection_status',
+            'collected_status', 'current_coordinates',
+        ]

@@ -15,6 +15,6 @@ class BusAdmin(admin.ModelAdmin):
 @admin.register(Package)
 class PackageAdmin(admin.ModelAdmin):
     list_display = [
-        'tracking_number', 'status', 'receiver_name', 'receiver_phone_number',
-        'vehicle', 'delivery_destination', 'departure_date', 'departure_time'
+        'tracking_number',  'receiver_name', 'receiver_phone_number',
+        'vehicle', 'delivery_town', 'departure_date', 'departure_time'
     ]
