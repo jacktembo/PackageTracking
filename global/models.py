@@ -28,6 +28,9 @@ class CourierCompany(models.Model):
     company_phone_number = models.CharField(max_length=50)
     company_email = models.EmailField(max_length=64)
     address = models.CharField(max_length=100)
+    all1zed_commission = models.FloatField(default=5.0, help_text='Commission charged per Package Sent (In Zambian '
+                                                                  'Kwacha)')
+    account_balance = models.FloatField(default=0.0, help_text='Initial account balance for this company in Zambian Kwacha')
 
     class Meta:
         verbose_name_plural = 'Courier Companies'
