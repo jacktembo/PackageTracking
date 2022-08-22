@@ -40,11 +40,11 @@ class Vehicle(models.Model):
     """
     The actual bus that will be delivering packages.
     """
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Vehicle Admin')
     courier_company = models.ForeignKey(CourierCompany, on_delete=models.CASCADE)
     vehicle_full_name = models.CharField(max_length=255)
     departure_time = models.TimeField(default=datetime.now().time())
-    transit_time = models.IntegerField()
+    transit_time = models.IntegerField(help_text='Number of hours it takes for vehicle to reach the destination.')
 
     def __str__(self):
         return self.vehicle_full_name
