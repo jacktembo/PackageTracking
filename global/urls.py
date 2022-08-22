@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 admin.AdminSite.site_header = 'Package Tracking'
 admin.AdminSite.index_title = 'Welcome To All1Zed Package Tracking System'
@@ -23,4 +25,4 @@ admin.AdminSite.index_title = 'Welcome To All1Zed Package Tracking System'
 urlpatterns = [
     path('packages', views.PackageList.as_view()),
     path('packages/<tracking_number>', views.PackageDetail.as_view()),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
