@@ -87,6 +87,7 @@ dev_db = {
 }
 prod_db = {
     'default': {
+        'HOST': 'server.all1zed.com',
         'NAME': 'allzedco_packages',
         'ENGINE': 'mysql.connector.django',
         'USER': 'allzedco_root',
@@ -99,7 +100,7 @@ prod_db = {
 
 DATABASES = prod_db
 
-# Password validation
+# Password validation,
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
