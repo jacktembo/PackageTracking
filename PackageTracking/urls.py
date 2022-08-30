@@ -44,4 +44,6 @@ urlpatterns = [
     path('global/', include('global.urls')),
     path('api/', include('global.urls')),
     path('api/', include('users.urls')),
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.authtoken')),
 ]
