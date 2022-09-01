@@ -14,7 +14,16 @@ class BusAdmin(admin.ModelAdmin):
 
 @admin.register(Package)
 class PackageAdmin(admin.ModelAdmin):
+
+    def from_town(self, package: Package):
+        return package.starting_town
+
+    def status(self, package: Package):
+        return "Collected" if package.collected_status else "Not Collected"
+
     list_display = [
         'tracking_number',  'receiver_name', 'receiver_phone_number',
-        'vehicle', 'delivery_town', 'departure_date', 'departure_time'
+        'vehicle', 'from_town', 'delivery_town', 'departure_date', 'departure_time',
+        'price', 'status',
+
     ]
