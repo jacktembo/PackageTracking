@@ -1,9 +1,7 @@
-from rest_framework.decorators import api_view
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.response import Response
-from .models import Package
-from .serializers import PackageSerializer
-from django.shortcuts import get_object_or_404, get_list_or_404
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+
+from .models import Package, Vehicle
+from .serializers import PackageSerializer, VehicleSerializer
 
 
 class PackageList(ListCreateAPIView):
@@ -16,8 +14,17 @@ class PackageList(ListCreateAPIView):
 
 class PackageDetail(RetrieveUpdateDestroyAPIView):
     lookup_field = 'tracking_number'
+
     def get_serializer_class(self):
         return PackageSerializer
 
     def get_queryset(self):
         return Package.objects.all()
+
+
+class VehicleList(ListCreateAPIView):
+    def get_queryset(self):
+        return Vehicle.objects.all()
+
+    def get_serializer_class(self):
+        return VehicleSerializer

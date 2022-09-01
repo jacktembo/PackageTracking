@@ -25,4 +25,5 @@ admin.AdminSite.index_title = 'Welcome To All1Zed Package Tracking System'
 urlpatterns = [
     path('packages', views.PackageList.as_view()),
     path('packages/<tracking_number>', views.PackageDetail.as_view()),
+    path('vehicles', views.VehicleList.as_view()),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
