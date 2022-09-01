@@ -89,10 +89,9 @@ dev_db = {
 }
 prod_db = {
     'default': {
-        'HOST': 'server.all1zed.com',
-        'NAME': 'allzedco_packages',
+        'NAME': 'all1zed_packages',
         'ENGINE': 'mysql.connector.django',
-        'USER': 'allzedco_root',
+        'USER': 'all1zed_root',
         'PASSWORD': 'Zambia2022!',
         'OPTIONS': {
             'autocommit': True,
