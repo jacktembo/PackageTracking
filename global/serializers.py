@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Package, Vehicle
+from .models import Package, Vehicle, CourierCompany
 
 
 class PackageSerializer(serializers.ModelSerializer):
@@ -28,3 +28,9 @@ class VehicleSerializer(serializers.ModelSerializer):
             'id', 'courier_company', 'vehicle_full_name', 'departure_time',
             'transit_time',
         ]
+
+
+class CourierCompanySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourierCompany
+        fields = '__all__'

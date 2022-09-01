@@ -26,4 +26,8 @@ urlpatterns = [
     path('packages', views.PackageList.as_view()),
     path('packages/<tracking_number>', views.PackageDetail.as_view()),
     path('vehicles', views.VehicleList.as_view()),
+    path('total-sales', views.TotalSales.as_view()),
+    path('total-sales/<int:vehicle_id>', views.TotalSales.as_view()),
+    path('total-sales-count', views.TotalSalesCount.as_view()),
+    path('total-sales-count/<int:vehicle_id>', views.TotalSalesCount.as_view()),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
