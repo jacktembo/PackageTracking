@@ -24,7 +24,7 @@ class PackageDetail(RetrieveUpdateDestroyAPIView):
 
 class VehicleList(ListCreateAPIView):
     def get_queryset(self):
-        return Vehicle.objects.all()
+        return Vehicle.objects.filter(courier_company__user=self.request.user)
 
     def get_serializer_class(self):
         return VehicleSerializer
