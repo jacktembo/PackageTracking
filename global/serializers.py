@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Package
+from .models import Package, Vehicle
 
 
 class PackageSerializer(serializers.ModelSerializer):
@@ -18,4 +18,13 @@ class PackageSerializer(serializers.ModelSerializer):
             'transit_date_time', 'ready_for_collection_date_time', 'collected_date_time',
             'processed_status', 'transit_status', 'ready_for_collection_status',
             'collected_status', 'current_coordinates',
+        ]
+
+
+class VehicleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vehicle
+        fields = [
+            'id', 'company_name', 'company_email', 'address', 'company_phone_number',
+            'all1zed_commission',
         ]
