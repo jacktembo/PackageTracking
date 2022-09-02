@@ -166,10 +166,7 @@ SIMPLE_JWT = {
 }
 
 DJOSER = {
-    'SERIALIZERS': {
-        'user_create': 'core.serializers.UserCreateSerializer',
-        'current_user': 'core.serializers.UserSerializer',
-    }
+
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
