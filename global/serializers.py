@@ -5,9 +5,13 @@ from .models import Package, Vehicle, CourierCompany
 
 class PackageSerializer(serializers.ModelSerializer):
     package_tracking_number = serializers.SerializerMethodField(method_name='tracking_number')
+    current_coordinates = serializers.SerializerMethodField(method_name='the_converted_coordinates')
 
     def tracking_number(self, package: Package):
         return package.tracking_number
+
+    def the_converted_coordinates(self, package: Package):
+        return [float(i) for i in package.current_coordinates.split(', ')]
 
     class Meta:
         model = Package
