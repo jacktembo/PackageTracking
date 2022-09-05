@@ -75,13 +75,12 @@ class Package(models.Model):
     collected_date_time = models.DateTimeField(blank=True, null=True) # Time package was collected.
     processed_status = models.BooleanField(default=True, blank=True, null=True)
     transit_status = models.BooleanField(default=False, blank=True, null=True)
+    transit_message = models.CharField(max_length=255, default=f'In transit.')
     ready_for_collection_status = models.BooleanField(default=False, blank=True, null=True)
     collected_status = models.BooleanField(default=False, blank=True, null=True)
     current_coordinates = models.CharField(max_length=255, default="0.0, 0.0")
+    previous_town = models.CharField(max_length=255, default='...')
 
     def __str__(self):
         return f"{self.tracking_number} ---> {self.starting_town} - {self.delivery_town}"
-
-
-
 

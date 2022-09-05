@@ -1,6 +1,7 @@
 import datetime
 
 from django.db.models import Sum
+from django.shortcuts import get_object_or_404, get_list_or_404
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
@@ -67,6 +68,16 @@ class CourierCompanyList(ListCreateAPIView):
         return CourierCompanySerializer
 
 
+class CourierCompanyDetail(RetrieveUpdateDestroyAPIView):
+    lookup_field = 'id'
+
+    def get_serializer_class(self):
+        return CourierCompanySerializer
+
+    def get_queryset(self):
+        return CourierCompany.objects.filter(user=self.request.user)
+
+
 class TotalSales(APIView):
     """
     Get total sales for whole company or specified bus.
@@ -96,3 +107,17 @@ class TotalSalesCount(APIView):
             result = Package.objects.filter(departure_date=today, vehicle__courier_company__user=self.request.user,
                                           vehicle__id=int(vehicle_id)).count()
             return Response(result)
+
+
+class Sorting(APIView):
+
+
+    def post(self, request):
+        tracking_number = self.request.data.get('tracking_number', False)
+        sorting_town = self.request.data.get('sorting_town', False)
+        new_vehicle_id = self.request.data.get('new_vehicle_id', False)
+        new_vehicle = get_object_or_404(Vehicle, id=int(new_vehicle_id))
+        Package.objects.filter(tracking_number=tracking_number).update(
+            vehicle=new_vehicle, previous_town=sorting_town, transit_status=True
+        )
+
