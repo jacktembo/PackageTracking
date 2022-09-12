@@ -44,8 +44,9 @@ class PackageList(ListCreateAPIView):
 
 class PackagesUpdateLocation(APIView):
     def post(self, request):
+        vehicle = Vehicle.objects.get(id=int(self.request.data.get('vehicle', None)))
         current_coordinates = self.request.data.get('current_coordinates', None)
-        packages = Package.objects.filter(vehicle__courier_company__user=self.request.user)
+        packages = Package.objects.filter(vehicle__courier_company__user=self.request.user, vehicle=vehicle)
         packages.update(current_coordinates=current_coordinates)
         return Response({'status': 'successfully updated'}, status=status.HTTP_200_OK)
 
