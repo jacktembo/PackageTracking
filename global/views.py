@@ -1,6 +1,7 @@
 import datetime
 
 from django.db.models import Sum
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, get_list_or_404
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
@@ -13,6 +14,10 @@ from utils import sms, phone_numbers
 
 
 today = datetime.datetime.today()
+
+
+def index(request):
+    return HttpResponse('Welcome To All1Zed Package Tracking')
 
 
 class PackageList(ListCreateAPIView):
