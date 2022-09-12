@@ -42,6 +42,14 @@ class PackageList(ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
+class PackagesUpdateLocation(APIView):
+    def post(self, request):
+        current_coordinates = self.request.data.get('current_coordinates', None)
+        packages = Package.objects.filter(vehicle__courier_company__user=self.request.user)
+        packages.update(current_coordinates=current_coordinates)
+        return Response({'status': 'successfully updated'}, status=status.HTTP_200_OK)
+
+
 class PackageDetail(RetrieveUpdateDestroyAPIView):
     lookup_field = 'tracking_number'
 

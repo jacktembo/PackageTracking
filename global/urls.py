@@ -25,6 +25,7 @@ admin.AdminSite.index_title = 'Welcome To All1Zed Package Tracking System'
 urlpatterns = [
     path('packages', views.PackageList.as_view()),
     path('packages/<tracking_number>', views.PackageDetail.as_view()),
+    path('packages/location/update', views.PackagesUpdateLocation.as_view()),
     path('courier-companies', views.CourierCompanyList.as_view()),
     path('courier-companies/<int:id>', views.CourierCompanyDetail.as_view()),
     path('vehicles', views.VehicleList.as_view()),
