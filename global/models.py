@@ -55,7 +55,6 @@ class Vehicle(models.Model):
         verbose_name_plural = 'Vehicles'
 
 
-
 class Package(models.Model):
     """Package to be tracked"""
     tracking_number = models.CharField(max_length=255, unique=True, default=calculate_tracking_number(), editable=False)

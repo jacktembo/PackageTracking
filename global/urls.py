@@ -34,4 +34,5 @@ urlpatterns = [
     path('total-sales/<int:vehicle_id>', views.TotalSales.as_view()),
     path('total-sales-count', views.TotalSalesCount.as_view()),
     path('total-sales-count/<int:vehicle_id>', views.TotalSalesCount.as_view()),
+    path('sort', views.Sorting.as_view()),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
