@@ -102,7 +102,7 @@ prod_db = {
     }
 }
 
-DATABASES = prod_db
+DATABASES = dev_db
 
 # Password validation,
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
