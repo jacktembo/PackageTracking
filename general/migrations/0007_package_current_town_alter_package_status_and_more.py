@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("global", "0006_alter_package_tracking_number_and_more"),
+        ("general", "0006_alter_package_tracking_number_and_more"),
     ]
 
     operations = [

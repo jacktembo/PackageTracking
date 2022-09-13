@@ -3,11 +3,10 @@ import secrets
 import string
 from datetime import datetime
 from time import sleep
-
+from PackageTracking.models import KazangSession
 import requests
 
 from . import phone_numbers
-from .models import KazangSession
 
 now = datetime.now().isoformat()
 

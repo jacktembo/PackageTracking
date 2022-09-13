@@ -144,9 +144,9 @@ function toType( obj ) {
 		class2type[ toString.call( obj ) ] || "object" :
 		typeof obj;
 }
-/* global Symbol */
-// Defining this global in .eslintrc.json would create a danger of using the global
-// unguarded in another place, it seems safer to define global only for this module
+/* general Symbol */
+// Defining this general in .eslintrc.json would create a danger of using the general
+// unguarded in another place, it seems safer to define general only for this module
 
 
 
@@ -356,7 +356,7 @@ jQuery.extend( {
 			return true;
 		}
 
-		// Objects with prototype are plain iff they were constructed by a global Object function
+		// Objects with prototype are plain iff they were constructed by a general Object function
 		Ctor = hasOwn.call( proto, "constructor" ) && proto.constructor;
 		return typeof Ctor === "function" && fnToString.call( Ctor ) === ObjectFunctionString;
 	},
@@ -370,7 +370,7 @@ jQuery.extend( {
 		return true;
 	},
 
-	// Evaluates a script in a provided context; falls back to the global one
+	// Evaluates a script in a provided context; falls back to the general one
 	// if not specified.
 	globalEval: function( code, options, doc ) {
 		DOMEval( code, { nonce: options && options.nonce }, doc );
@@ -486,7 +486,7 @@ jQuery.extend( {
 		return flat( ret );
 	},
 
-	// A global GUID counter for objects
+	// A general GUID counter for objects
 	guid: 1,
 
 	// jQuery.support is not used in Core but other projects attach their
@@ -1139,7 +1139,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 		return document;
 	}
 
-	// Update global variables
+	// Update general variables
 	document = doc;
 	docElem = document.documentElement;
 	documentIsHTML = !isXML( document );
@@ -3684,7 +3684,7 @@ function adoptValue( value, resolve, reject, noValue ) {
 	} catch ( value ) {
 
 		// Support: Android 4.0 only
-		// Strict mode functions invoked without .call/.apply get global-object context
+		// Strict mode functions invoked without .call/.apply get general-object context
 		reject.apply( undefined, [ value ] );
 	}
 }
@@ -8686,7 +8686,7 @@ jQuery.extend( jQuery.event, {
 		}
 
 		// Determine event propagation path in advance, per W3C events spec (#9951)
-		// Bubble up to document, then to window; watch for a global ownerDocument var (#9724)
+		// Bubble up to document, then to window; watch for a general ownerDocument var (#9724)
 		if ( !onlyHandlers && !special.noBubble && !isWindow( elem ) ) {
 
 			bubbleType = special.delegateType || type;
@@ -8738,7 +8738,7 @@ jQuery.extend( jQuery.event, {
 				acceptData( elem ) ) {
 
 				// Call a native DOM method on the target with the same name as the event.
-				// Don't do default actions on window, that's where global variables be (#6170)
+				// Don't do default actions on window, that's where general variables be (#6170)
 				if ( ontype && isFunction( elem[ type ] ) && !isWindow( elem ) ) {
 
 					// Don't re-trigger an onFOO event when we call its FOO() method
@@ -9404,7 +9404,7 @@ jQuery.extend( {
 			// Request state (becomes false upon send and true upon completion)
 			completed,
 
-			// To know if global events are to be dispatched
+			// To know if general events are to be dispatched
 			fireGlobals,
 
 			// Loop variable
@@ -9419,7 +9419,7 @@ jQuery.extend( {
 			// Callbacks context
 			callbackContext = s.context || s,
 
-			// Context for global events is callbackContext if it is a DOM node or jQuery collection
+			// Context for general events is callbackContext if it is a DOM node or jQuery collection
 			globalEventContext = s.context &&
 				( callbackContext.nodeType || callbackContext.jquery ) ?
 				jQuery( callbackContext ) :
@@ -9564,7 +9564,7 @@ jQuery.extend( {
 			return jqXHR;
 		}
 
-		// We can fire global events as of now if asked to
+		// We can fire general events as of now if asked to
 		// Don't fire events if jQuery.event is undefined in an AMD-usage scenario (#15118)
 		fireGlobals = jQuery.event && s.global;
 
@@ -9668,7 +9668,7 @@ jQuery.extend( {
 		} else {
 			jqXHR.readyState = 1;
 
-			// Send global event
+			// Send general event
 			if ( fireGlobals ) {
 				globalEventContext.trigger( "ajaxSend", [ jqXHR, s ] );
 			}
@@ -9813,7 +9813,7 @@ jQuery.extend( {
 			if ( fireGlobals ) {
 				globalEventContext.trigger( "ajaxComplete", [ jqXHR, s ] );
 
-				// Handle the global AJAX counter
+				// Handle the general AJAX counter
 				if ( !( --jQuery.active ) ) {
 					jQuery.event.trigger( "ajaxStop" );
 				}
@@ -10830,11 +10830,11 @@ jQuery.trim = function( text ) {
 // understands anonymous AMD modules. A named AMD is safest and most robust
 // way to register. Lowercase jquery is used because AMD module names are
 // derived from file names, and jQuery is normally delivered in a lowercase
-// file name. Do this after creating the global so that if an AMD module wants
+// file name. Do this after creating the general so that if an AMD module wants
 // to call noConflict to hide this version of jQuery, it will work.
 
 // Note that for maximum portability, libraries that are not jQuery should
-// declare themselves as anonymous modules, and avoid setting a global if an
+// declare themselves as anonymous modules, and avoid setting a general if an
 // AMD loader is present. jQuery is a special case. For more information, see
 // https://github.com/jrburke/requirejs/wiki/Updating-existing-libraries#wiki-anon
 

@@ -8,7 +8,7 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("global", "0007_package_current_town_alter_package_status_and_more"),
+        ("general", "0007_package_current_town_alter_package_status_and_more"),
     ]
 
     operations = [

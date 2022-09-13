@@ -144,3 +144,4 @@ class Sorting(APIView):
         vehicle_id = request.data.get('vehicle_id', None)
         if vehicle_id is not None:
             pass
+

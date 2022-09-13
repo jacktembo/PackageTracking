@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("global", "0019_remove_vehicle_transit_time_and_more"),
+        ("general", "0019_remove_vehicle_transit_time_and_more"),
     ]
 
     operations = [

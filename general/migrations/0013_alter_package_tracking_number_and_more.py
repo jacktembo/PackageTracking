@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("global", "0012_remove_package_date_time_received_and_more"),
+        ("general", "0012_remove_package_date_time_received_and_more"),
     ]
 
     operations = [

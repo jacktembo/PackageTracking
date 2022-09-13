@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
-    'global',
+    'general',
+    'PackageTracking',
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
@@ -102,7 +103,7 @@ prod_db = {
     }
 }
 
-DATABASES = prod_db
+DATABASES = dev_db
 
 # Password validation,
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -157,7 +158,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
     'COERCE_DECIMAL_TO_STRING': False,
-    'PAGE_SIZE': 10,
 }
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),

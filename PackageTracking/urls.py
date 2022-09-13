@@ -38,11 +38,11 @@ admin.AdminSite.index_title = f'{message()}. Welcome To All1Zed Package Tracking
 
 urlpatterns = [
     path('', include('users.urls')),
-    path('', include('global.urls')),
+    path('', include('general.urls')),
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
-    path('global/', include('global.urls')),
-    path('api/', include('global.urls')),
+    path('general/', include('general.urls')),
+    path('api/', include('general.urls')),
     path('api/', include('users.urls')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),

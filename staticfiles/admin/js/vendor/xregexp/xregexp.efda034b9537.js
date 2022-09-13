@@ -337,7 +337,7 @@ module.exports = function(XRegExp) {
             // 0  | 0  | 1  | throw
             // 0  | 0  | 0  | break
             // The paths above don't include the sticky mode special case. The loop ends after the
-            // first completed match if not `global`.
+            // first completed match if not `general`.
             if (leftMatch || rightMatch) {
                 delimStart = (leftMatch || rightMatch).index;
                 delimEnd = delimStart + (leftMatch || rightMatch)[0].length;
@@ -3268,7 +3268,7 @@ function toObject(value) {
  * @param {String|RegExp} pattern Regex pattern string, or an existing regex object to copy.
  * @param {String} [flags] Any combination of flags.
  *   Native flags:
- *     - `g` - global
+ *     - `g` - general
  *     - `i` - ignore case
  *     - `m` - multiline anchors
  *     - `u` - unicode (ES6)
@@ -3625,7 +3625,7 @@ XRegExp.exec = function(str, regex, pos, sticky) {
 
 /**
  * Executes a provided function once per regex match. Searches always start at the beginning of the
- * string and continue until the end, regardless of the state of the regex's `global` property and
+ * string and continue until the end, regardless of the state of the regex's `general` property and
  * initial `lastIndex`.
  *
  * @memberOf XRegExp
@@ -3674,7 +3674,7 @@ XRegExp.forEach = function(str, regex, callback) {
  * @example
  *
  * var globalCopy = XRegExp.globalize(/regex/);
- * globalCopy.global; // -> true
+ * globalCopy.general; // -> true
  */
 XRegExp.globalize = function(regex) {
     return copyRegex(regex, {addG: true});
@@ -3748,7 +3748,7 @@ XRegExp.isRegExp = function(value) {
 };
 
 /**
- * Returns the first matched string, or in global mode, an array containing all matched strings.
+ * Returns the first matched string, or in general mode, an array containing all matched strings.
  * This is essentially a more convenient re-implementation of `String.prototype.match` that gives
  * the result types you actually want (string instead of `exec`-style array in match-first mode,
  * and an empty array instead of `null` when no matches are found in match-all mode). It also lets
@@ -3867,7 +3867,7 @@ XRegExp.matchChain = function(str, chain) {
 /**
  * Returns a new string with one or all matches of a pattern replaced. The pattern can be a string
  * or regex, and the replacement can be a string or a function to be called for each match. To
- * perform a global search and replace, use the optional `scope` argument or include flag g if using
+ * perform a general search and replace, use the optional `scope` argument or include flag g if using
  * a regex. Replacement strings can use `${n}` for named and numbered backreferences. Replacement
  * functions can use named backreferences via `arguments[0].name`. Also fixes browser bugs compared
  * to the native `String.prototype.replace` and can be used reliably cross-browser.

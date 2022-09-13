@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("global", "0014_couriercompany_account_balance_and_more"),
+        ("general", "0014_couriercompany_account_balance_and_more"),
     ]
 
     operations = [

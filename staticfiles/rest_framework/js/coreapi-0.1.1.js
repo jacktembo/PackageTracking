@@ -864,7 +864,7 @@ module.exports = {
 
 },{"url-parse":19}],16:[function(require,module,exports){
 // the whatwg-fetch polyfill installs the fetch() function
-// on the global object (window or self)
+// on the general object (window or self)
 //
 // Return that as the export for use in Webpack, Browserify etc.
 require('whatwg-fetch');

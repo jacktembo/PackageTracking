@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("global", "0017_remove_vehicle_user_alter_package_tracking_number_and_more"),
+        ("general", "0017_remove_vehicle_user_alter_package_tracking_number_and_more"),
     ]
 
     operations = [

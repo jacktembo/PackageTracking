@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("global", "0005_alter_vehicle_departure_time_and_more"),
+        ("general", "0005_alter_vehicle_departure_time_and_more"),
     ]
 
     operations = [

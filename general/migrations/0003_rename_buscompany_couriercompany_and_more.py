@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("global", "0002_rename_bus_vehicle"),
+        ("general", "0002_rename_bus_vehicle"),
     ]
 
     operations = [

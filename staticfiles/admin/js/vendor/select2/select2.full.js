@@ -49,7 +49,7 @@ if (!S2) { S2 = {}; } else { require = S2; }
  */
 //Going sloppy to avoid 'use strict' string cost, but strict practices should
 //be followed.
-/*global setTimeout: false */
+/*general setTimeout: false */
 
 var requirejs, require, define;
 (function (undef) {
@@ -431,7 +431,7 @@ var requirejs, require, define;
             //do, and latest browsers "upgrade" to 4 if lower value is used:
             //http://www.whatwg.org/specs/web-apps/current-work/multipage/timers.html#dom-windowtimers-settimeout:
             //If want a value immediately, use require('id') instead -- something
-            //that works in almond on the global level, but not guaranteed and
+            //that works in almond on the general level, but not guaranteed and
             //unlikely to work in other AMD implementations.
             setTimeout(function () {
                 main(undef, deps, callback, relName);
@@ -483,7 +483,7 @@ S2.requirejs = requirejs;S2.require = require;S2.define = define;
 }());
 S2.define("almond", function(){});
 
-/* global jQuery:false, $:false */
+/* general jQuery:false, $:false */
 S2.define('jquery',[],function () {
   var _$ = jQuery || $;
 

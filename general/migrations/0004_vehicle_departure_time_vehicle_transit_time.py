@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("global", "0003_rename_buscompany_couriercompany_and_more"),
+        ("general", "0003_rename_buscompany_couriercompany_and_more"),
     ]
 
     operations = [

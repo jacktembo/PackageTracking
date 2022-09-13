@@ -57,7 +57,7 @@ class Migration(migrations.Migration):
                 (
                     "bus",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="global.bus"
+                        on_delete=django.db.models.deletion.CASCADE, to="general.bus"
                     ),
                 ),
             ],
@@ -93,7 +93,7 @@ class Migration(migrations.Migration):
             model_name="bus",
             name="bus_company",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="global.buscompany"
+                on_delete=django.db.models.deletion.CASCADE, to="general.buscompany"
             ),
         ),
         migrations.AddField(

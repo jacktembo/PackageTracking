@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
+from PackageTracking import views as views2
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -35,4 +36,7 @@ urlpatterns = [
     path('total-sales-count', views.TotalSalesCount.as_view()),
     path('total-sales-count/<int:vehicle_id>', views.TotalSalesCount.as_view()),
     path('sort', views.Sorting.as_view()),
+    path('pricing-plans', views2.PricingPlanView.as_view()),
+    path('pay', views2.AccountTopUp.as_view()),
+    path('pay-query', views2.TopUpQuery.as_view()),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
