@@ -146,5 +146,10 @@ class Sorting(APIView):
                 return Response(PackageSerializer(package.first()).data, status=status.HTTP_200_OK)
         vehicle_id = request.data.get('vehicle_id', None)
         if vehicle_id is not None:
-            pass
+            tracking_number = request.data.get('tracking_number', None)
+            package = Package.objects.filter(tracking_number=tracking_number)
+            vehicle = Vehicle.objects.filter(id=int(vehicle_id))
+            package.update(vehicle=vehicle)
+            return Response(package)
+
 
