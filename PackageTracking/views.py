@@ -36,7 +36,7 @@ class AccountTopUp(APIView):
         price_per_package = courier_company.all1zed_commission
         cost = price_per_package * plan.number_of_packages
         if phone_numbers.get_network(phone_number).lower() == 'airtel':
-            r = kazang.airtel_pay_payment(phone_number, 1 * 100)
+            r = kazang.airtel_pay_payment(phone_number, cost * 100)
             del r['balance']
             r['message'] = 'Please approve the transaction on your phone.'
             return Response(r)

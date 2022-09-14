@@ -103,7 +103,7 @@ prod_db = {
     }
 }
 
-DATABASES = dev_db
+DATABASES = prod_db
 
 # Password validation,
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -161,8 +161,8 @@ REST_FRAMEWORK = {
 }
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(hours=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(hours=30),
 }
 
 DJOSER = {
