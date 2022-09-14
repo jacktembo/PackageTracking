@@ -148,7 +148,7 @@ class Sorting(APIView):
         if vehicle_id is not None:
             tracking_number = request.data.get('tracking_number', None)
             package = Package.objects.filter(tracking_number=tracking_number)
-            vehicle = Vehicle.objects.filter(id=int(vehicle_id))
+            vehicle = Vehicle.objects.filter(id=int(vehicle_id)).first()
             package.update(vehicle=vehicle)
             return Response(package)
 
