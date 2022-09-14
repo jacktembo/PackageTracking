@@ -64,7 +64,10 @@ class PackageDetail(RetrieveUpdateDestroyAPIView):
         return PackageSerializer
 
     def get_queryset(self):
-        return Package.objects.filter(vehicle__courier_company__user=self.request.user)
+        if self.request.user.username == 'app':
+            return Package.objects.all()
+        else:
+            return Package.objects.filter(vehicle__courier_company__user=self.request.user)
 
 
 class VehicleList(ListCreateAPIView):
