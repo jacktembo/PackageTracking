@@ -150,6 +150,6 @@ class Sorting(APIView):
             package = Package.objects.filter(tracking_number=tracking_number)
             vehicle = Vehicle.objects.filter(id=int(vehicle_id)).first()
             package.update(vehicle=vehicle)
-            return Response(PackageSerializer(package).data)
+            return Response(PackageSerializer(package.first()).data)
 
 
