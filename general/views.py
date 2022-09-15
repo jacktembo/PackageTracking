@@ -39,9 +39,9 @@ class PackageList(ListCreateAPIView):
         self.perform_create(serializer)
         tracking_number = serializer.data[next(iter(serializer.data))]
         receiver_message = f"Dear {receiver_name}, your package has been received at {starting_town} station and processed " \
-                           f"for dispatch. Tracking No. FM{tracking_number} Courier charge K{price}. Check your package status at https://packages.all1zed.com. "
+                           f"for dispatch. Tracking No. {tracking_number} Courier charge K{price}. Check your package status at https://packages.all1zed.com. "
         sender_message = f"Dear Customer, the package you are sending has been processed " \
-                         f"for dispatch. Tracking No. FM{tracking_number} Courier charge K{price}. Check your package status at https://packages.all1zed.com. "
+                         f"for dispatch. Tracking No. {tracking_number} Courier charge K{price}. Check your package status at https://packages.all1zed.com. "
         sms.send_sms(receiver_phone_number, receiver_message)
         sms.send_sms(sender_phone_number, sender_message)
         headers = self.get_success_headers(serializer.data)
