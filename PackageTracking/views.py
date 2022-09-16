@@ -36,15 +36,23 @@ class AccountTopUp(APIView):
         cost = price_per_package * plan.number_of_packages
         if phone_numbers.get_network(phone_number).lower() == 'airtel':
             r = kazang.airtel_pay_payment(phone_number, cost * 100)
-            del r['balance']
-            r['message'] = 'Please approve the transaction on your phone.'
-            return Response(r)
+            if r.get('response_code', None) == '0':
+                del r['balance']
+                r['message'] = 'Please approve the transaction on your phone.'
+                r['status'] = 'successful'
+                r['reference_number'] = r['airtel_reference']
+                return Response(r)
+            else:
+                return Response({'status': 'failed', 'message': 'payment prompt was not sent to a mobile device. Please try again.'})
 
         elif phone_numbers.get_network(phone_number).lower() == 'mtn':
             r = kazang.mtn_debit(phone_number, cost * 100)
-            del r['balance']
-            r['message'] = 'Please approve the transaction on your mobile device.'
-            return Response(r)
+            if r.get('response_code', None) == '0':
+                del r['balance']
+                r['message'] = 'Please approve the transaction on your mobile device.'
+                r['status'] = 'successful'
+                r['reference_number'] = r['supplier_transaction_id']
+                return Response(r)
 
         elif phone_numbers.get_network(phone_number).lower() == 'zamtel':
             r = kazang.zamtel_money_pay(phone_number, cost * 100)
@@ -56,7 +64,10 @@ class AccountTopUp(APIView):
             remaining_packages = courier_company.number_of_packages
             CourierCompany.objects.filter(
                 user=request.user).first().number_of_packages = remaining_packages + plan.number_of_packages.save()
-            return Response(r)
+            if r.get('response_code', None) == '0':
+                return Response({'status': 'successful', 'message': 'zamtel payment was successful'})
+            else:
+                return Response({'status': 'failed', 'message': 'zamtel payment failed.'})
 
 
 
@@ -74,7 +85,7 @@ class TopUpQuery(APIView):
                 courier_company = CourierCompany.objects.filter(user=request.user).first()
                 remaining_packages = courier_company.number_of_packages
                 CourierCompany.objects.filter(user=request.user).first().number_of_packages = remaining_packages + plan.number_of_packages.save()
-                return Response(r)
+                return Response({'status': 'successful', 'message': 'airtel payment was successful.'})
             else:
                 return Response('Payment was not successful')
 
