@@ -30,7 +30,6 @@ class AccountTopUp(APIView):
     def post(self, request):
         plan_id = request.data.get('plan_id', None)
         phone_number = request.data.get('phone_number', None)
-        user = request.user
         plan = PricingPlan.objects.get(id=int(plan_id))
         courier_company = CourierCompany.objects.filter(user=request.user).first()
         price_per_package = courier_company.all1zed_commission
@@ -40,6 +39,25 @@ class AccountTopUp(APIView):
             del r['balance']
             r['message'] = 'Please approve the transaction on your phone.'
             return Response(r)
+
+        elif phone_numbers.get_network(phone_number).lower() == 'mtn':
+            r = kazang.mtn_debit(phone_number, cost * 100)
+            del r['balance']
+            r['message'] = 'Please approve the transaction on your mobile device.'
+            return Response(r)
+
+        elif phone_numbers.get_network(phone_number).lower() == 'zamtel':
+            r = kazang.zamtel_money_pay(phone_number, cost * 100)
+            del r['balance']
+            r['message'] = 'Please approve the transaction on your mobile device.'
+            plan_id = request.data.get('plan_id', None)
+            plan = PricingPlan.objects.get(id=int(plan_id))
+            courier_company = CourierCompany.objects.filter(user=request.user).first()
+            remaining_packages = courier_company.number_of_packages
+            CourierCompany.objects.filter(
+                user=request.user).first().number_of_packages = remaining_packages + plan.number_of_packages.save()
+            return Response(r)
+
 
 
 class TopUpQuery(APIView):
@@ -59,3 +77,4 @@ class TopUpQuery(APIView):
                 return Response(r)
             else:
                 return Response('Payment was not successful')
+
