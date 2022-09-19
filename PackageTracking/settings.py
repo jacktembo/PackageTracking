@@ -166,6 +166,7 @@ SIMPLE_JWT = {
 }
 
 DJOSER = {
+    'a': 'b'
 
 }
 
