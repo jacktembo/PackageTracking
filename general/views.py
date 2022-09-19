@@ -23,7 +23,7 @@ class PackageList(ListCreateAPIView):
     def get_queryset(self):
         return Package.objects.filter(vehicle__courier_company__user=self.request.user)
 
-    def get_serializer_class(self):
+    def getSpecial_serializer_class(self):
         return PackageSerializer
 
     def create(self, request, *args, **kwargs):
@@ -34,6 +34,7 @@ class PackageList(ListCreateAPIView):
         starting_town = self.request.data['starting_town']
         data1 = request.data
         data1['processed_status'] = True
+
         serializer = self.get_serializer(data=data1)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)

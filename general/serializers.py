@@ -35,6 +35,14 @@ class VehicleSerializer(serializers.ModelSerializer):
 
 
 class CourierCompanySerializer(serializers.ModelSerializer):
+    logo = serializers.SerializerMethodField(method_name='company_image')
+
+    def company_image(self, courier_company: CourierCompany):
+        return courier_company.company_logo.url if courier_company.company_logo else 'Company did not upload Logo.'
+
     class Meta:
         model = CourierCompany
-        fields = '__all__'
+        fields = [
+            'logo', 'company_name', 'company_phone_number', 'company_email',
+            'address', 'all1zed_commission'
+        ]

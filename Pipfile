@@ -13,6 +13,7 @@ djangorestframework-simplejwt = "*"
 django-filter = "*"
 mysql-connector-python = "*"
 django-cors-headers = "*"
+pillow = "*"
 
 [dev-packages]
 

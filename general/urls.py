@@ -40,4 +40,4 @@ urlpatterns = [
     path('pricing-plans', views2.PricingPlanView.as_view()),
     path('pay', views2.AccountTopUp.as_view()),
     path('pay-query', views2.TopUpQuery.as_view()),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
