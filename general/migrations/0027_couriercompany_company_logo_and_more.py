@@ -6,7 +6,6 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("general", "0026_alter_package_tracking_number"),
     ]
 
     operations = [
@@ -18,13 +17,6 @@ class Migration(migrations.Migration):
                 null=True,
                 upload_to="logos",
                 verbose_name="Upload Company logo.",
-            ),
-        ),
-        migrations.AlterField(
-            model_name="package",
-            name="tracking_number",
-            field=models.CharField(
-                default="8755365349", editable=False, max_length=255, unique=True
             ),
         ),
     ]
