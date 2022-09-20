@@ -1,4 +1,6 @@
 from django.db import models
+from pycparser.c_ast import Default
+
 
 class KazangSession(models.Model):
     """
@@ -21,7 +23,7 @@ class Transaction(models.Model):
     """
     A Transaction that happens on the system.
     """
-    name = models.CharField(max_length=100, blank=True, null=True)
+    name = models.CharField(max_length=100, blank=True, null=True, default='..')
     session_uuid = models.CharField(max_length=255)
     date_time_created = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=50, choices=TRANSACTION_STATUS)
