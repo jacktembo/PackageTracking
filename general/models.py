@@ -33,7 +33,7 @@ class CourierCompany(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              verbose_name='Login Username')  # Admin user account for the Bus Company.
     company_name = models.CharField(max_length=50)
-    company_initials = models.CharField(max_length=5, help_text='e.g FM', default='All1Zed')
+    company_initials = models.CharField(max_length=10, help_text='e.g FM', default='All1Zed')
 
     company_logo = models.ImageField(upload_to='logos', verbose_name='Upload Company logo.', null=True, blank=True)
     company_phone_number = models.CharField(max_length=50)
