@@ -7,10 +7,15 @@ from django.db import models
 
 def calculate_tracking_number():
     alphabet = string.digits
-    digits = ''.join(secrets.choice(alphabet) for i in range(10))
-    # s = "".join(self.vehicle.courier_company.company_name.split())
+    digits = ''.join(secrets.choice(alphabet) for i in range(12))
+    # company_initials = self.vehicle.courier_company.company_initials
     tracking_number = digits
     return tracking_number
+
+
+def calculate_initial(vehicle):
+    return vehicle.courier_company.company_initial
+
 
 
 class CourierCompany(models.Model):
@@ -22,9 +27,14 @@ class CourierCompany(models.Model):
     Returns:
         [type]: [description]
     """
+
+
+
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              verbose_name='Login Username')  # Admin user account for the Bus Company.
     company_name = models.CharField(max_length=50)
+    company_initials = models.CharField(max_length=5, help_text='e.g FM', default='All1Zed')
+
     company_logo = models.ImageField(upload_to='logos', verbose_name='Upload Company logo.', null=True, blank=True)
     company_phone_number = models.CharField(max_length=50)
     company_email = models.EmailField(max_length=64)
@@ -58,13 +68,13 @@ class Vehicle(models.Model):
 
 class Package(models.Model):
     """Package to be tracked"""
-    tracking_number = models.CharField(max_length=255, unique=True, default=calculate_tracking_number(), editable=False)
     receiver_name = models.CharField(max_length=255)
     receiver_phone_number = models.CharField(max_length=255)
     sender_phone_number = models.CharField(max_length=255)
     delivery_town = models.CharField(max_length=255)
     starting_town = models.CharField(max_length=255, default='Lusaka')
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
+    tracking_number = models.CharField(max_length=255, editable=False, default=calculate_tracking_number())
     number_of_packages = models.IntegerField(default=1)
     price = models.FloatField(default=0.0)
     departure_date = models.DateField(blank=True, null=True)
