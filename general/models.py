@@ -4,9 +4,9 @@ from datetime import date, timedelta, time, datetime
 from django.contrib.auth.models import User
 from django.db import models
 
+alphabet = string.digits
 
 def calculate_tracking_number():
-    alphabet = string.digits
     digits = ''.join(secrets.choice(alphabet) for i in range(12))
     # s = "".join(self.vehicle.courier_company.company_name.split())
     tracking_number = digits
@@ -58,7 +58,7 @@ class Vehicle(models.Model):
 
 class Package(models.Model):
     """Package to be tracked"""
-    tracking_number = models.CharField(max_length=255, unique=True, default=calculate_tracking_number(), editable=False)
+    tracking_number = models.CharField(max_length=255, default=''.join(secrets.choice(alphabet) for i in range(12)), editable=False)
     receiver_name = models.CharField(max_length=255)
     receiver_phone_number = models.CharField(max_length=255)
     sender_phone_number = models.CharField(max_length=255)
