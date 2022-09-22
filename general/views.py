@@ -33,7 +33,6 @@ class PackageList(ListCreateAPIView):
         receiver_name = self.request.data['receiver_name']
         starting_town = self.request.data['starting_town']
         data1 = request.data
-        data1['processed_status'] = True
         serializer = self.get_serializer(data=data1)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
