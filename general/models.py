@@ -58,7 +58,7 @@ class Vehicle(models.Model):
 
 class Package(models.Model):
     """Package to be tracked"""
-    tracking_number = models.CharField(max_length=255, default=''.join(secrets.choice(alphabet) for i in range(12)), editable=False)
+    tracking_number = models.CharField(max_length=255, editable=False)
     receiver_name = models.CharField(max_length=255)
     receiver_phone_number = models.CharField(max_length=255)
     sender_phone_number = models.CharField(max_length=255)
@@ -84,3 +84,7 @@ class Package(models.Model):
     def __str__(self):
         return f"{self.tracking_number} ---> {self.starting_town} - {self.delivery_town}"
 
+    def save(self, *args, **kwargs):
+        alphabet = string.ascii_uppercase + string.digits
+        self.tracking_number = ''.join(secrets.choice(alphabet) for i in range(10))
+        super(Package, self).save(*args, **kwargs)
