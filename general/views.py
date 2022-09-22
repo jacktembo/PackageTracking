@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from setuptools._imp import get_frozen_object
 
 from utils import sms
 from .models import Package, Vehicle, CourierCompany
@@ -37,7 +38,9 @@ class PackageList(ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         tracking_number = serializer.data[next(iter(serializer.data))]
-        receiver_message = f"Dear {receiver_name}, your package has been received at {starting_town} station and processed " \
+        vehicle = Vehicle.objects.get(id=int(serializer.data['vehicle']))
+        company_name = vehicle.courier_company.company_name
+        receiver_message = f"Dear {receiver_name}, your package has been received by {company_name} at {starting_town} station and processed " \
                            f"for dispatch. Tracking No. {tracking_number} Courier charge K{price}. Check your package status at https://packages.all1zed.com. "
         sender_message = f"Dear Customer, the package you are sending has been processed " \
                          f"for dispatch. Tracking No. {tracking_number} Courier charge K{price}. Check your package status at https://packages.all1zed.com. "
