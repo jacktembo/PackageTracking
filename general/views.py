@@ -39,16 +39,21 @@ class PackageList(ListCreateAPIView):
         self.perform_create(serializer)
         tracking_number = serializer.data[next(iter(serializer.data))]
         vehicle = Vehicle.objects.get(id=int(serializer.data['vehicle']))
-        company_name = vehicle.courier_company.company_name
-        receiver_message = f"Dear {receiver_name}, your package has been received by {company_name} at {starting_town} station and processed " \
-                           f"for dispatch. Tracking No. {tracking_number} Courier charge K{price}. Check your package status at https://packages.all1zed.com. "
-        sender_message = f"Dear Customer, the package you are sending has been processed " \
-                         f"for dispatch. Tracking No. {tracking_number} Courier charge K{price}. Check your package status at https://packages.all1zed.com. "
-        sms.send_sms(receiver_phone_number, receiver_message)
-        sms.send_sms(sender_phone_number, sender_message)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
+        company = vehicle.courier_company
+        if company.number_of_packages > 1:
+            company_name = vehicle.courier_company.company_name
+            receiver_message = f"Dear {receiver_name}, your package has been received by {company_name} at {starting_town} station and processed " \
+                               f"for dispatch. Tracking No. {tracking_number} Courier charge K{price}. Check your package status at https://packages.all1zed.com. "
+            sender_message = f"Dear Customer, the package you are sending has been processed " \
+                             f"for dispatch. Tracking No. {tracking_number} Courier charge K{price}. Check your package status at https://packages.all1zed.com. "
+            sms.send_sms(receiver_phone_number, receiver_message)
+            sms.send_sms(sender_phone_number, sender_message)
+            headers = self.get_success_headers(serializer.data)
+            remaining_packages = vehicle.courier_company.number_of_packages
+            company.number_of_packages = remaining_packages - 1
+            company.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return 'Insufficient Balance. Please To Up.'
 
 class PackagesUpdateLocation(APIView):
     def post(self, request):

@@ -4,19 +4,23 @@ from .models import Package, Vehicle, CourierCompany
 
 
 class PackageSerializer(serializers.ModelSerializer):
-    package_tracking_number = serializers.SerializerMethodField(method_name='tracking_number')
+    package_tracking_number = serializers.SerializerMethodField(method_name='the_tracking_number')
     current_coordinates = serializers.SerializerMethodField(method_name='the_converted_coordinates')
+    balance = serializers.SerializerMethodField(method_name='the_balance')
 
-    def tracking_number(self, package: Package):
+    def the_tracking_number(self, package: Package):
         return package.tracking_number
 
     def the_converted_coordinates(self, package: Package):
         return [float(i) for i in package.current_coordinates.split(', ')]
 
+    def the_balance(self, package: Package):
+        return package.vehicle.courier_company.number_of_packages
+
     class Meta:
         model = Package
         fields = [
-            'package_tracking_number', 'receiver_name', 'receiver_phone_number', 'sender_phone_number',
+            'package_tracking_number', 'balance', 'receiver_name', 'receiver_phone_number', 'sender_phone_number',
             'delivery_town', 'starting_town', 'vehicle', 'number_of_packages',
             'price', 'departure_date', 'departure_time', 'processed_date_time',
             'transit_date_time', 'ready_for_collection_date_time', 'collected_date_time',
