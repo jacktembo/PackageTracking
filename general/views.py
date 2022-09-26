@@ -7,8 +7,7 @@ from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from setuptools._imp import get_frozen_object
-
+from django_filters.rest_framework.backends import DjangoFilterBackend
 from utils import sms
 from .models import Package, Vehicle, CourierCompany
 from .serializers import PackageSerializer, VehicleSerializer, CourierCompanySerializer
@@ -26,6 +25,8 @@ class PackageList(ListCreateAPIView):
 
     def get_serializer_class(self):
         return PackageSerializer
+
+    filterset_fields = ['vehicle', 'departure_date']
 
     def create(self, request, *args, **kwargs):
         sender_phone_number = self.request.data['sender_phone_number']
