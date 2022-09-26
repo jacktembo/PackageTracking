@@ -7,6 +7,10 @@ class PackageSerializer(serializers.ModelSerializer):
     package_tracking_number = serializers.SerializerMethodField(method_name='the_tracking_number')
     current_coordinates = serializers.SerializerMethodField(method_name='the_converted_coordinates')
     balance = serializers.SerializerMethodField(method_name='the_balance')
+    vehicle_id = serializers.SerializerMethodField(method_name='the_vehicle_id')
+    vehicle_name = serializers.SerializerMethodField(method_name='the_vehicle_name')
+    company_name = serializers.SerializerMethodField(method_name='the_company_name')
+
 
     def the_tracking_number(self, package: Package):
         return package.tracking_number
@@ -17,9 +21,19 @@ class PackageSerializer(serializers.ModelSerializer):
     def the_balance(self, package: Package):
         return package.vehicle.courier_company.number_of_packages
 
+    def the_vehicle_id(self, package: Package):
+        return package.vehicle.id
+
+    def the_vehicle_name(self, package: Package):
+        return package.vehicle.vehicle_full_name
+
+    def the_company_name(self, package: Package):
+        return package.vehicle.courier_company.company_name
+
     class Meta:
         model = Package
         fields = [
+            'vehicle_id', 'vehicle_name', 'company_name',
             'package_tracking_number', 'balance', 'receiver_name', 'receiver_phone_number', 'sender_phone_number',
             'delivery_town', 'starting_town', 'vehicle', 'number_of_packages',
             'price', 'departure_date', 'departure_time', 'processed_date_time',
@@ -40,13 +54,18 @@ class VehicleSerializer(serializers.ModelSerializer):
 
 class CourierCompanySerializer(serializers.ModelSerializer):
     logo = serializers.SerializerMethodField(method_name='company_image')
+    packages_remaining = serializers.SerializerMethodField(method_name='the_packages_remaining')
 
     def company_image(self, courier_company: CourierCompany):
         return 'https://packages.pridezm.com' + courier_company.company_logo.url if courier_company.company_logo else 'Company did not upload Logo.'
 
+    def the_packages_remaining(self, courier_company: CourierCompany):
+        return courier_company.number_of_packages
+
     class Meta:
         model = CourierCompany
         fields = [
+            'packages_remaining',
             'logo', 'company_name', 'company_phone_number', 'company_email',
             'address', 'all1zed_commission'
         ]

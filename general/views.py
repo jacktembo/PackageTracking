@@ -55,6 +55,7 @@ class PackageList(ListCreateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         return 'Insufficient Balance. Please To Up.'
 
+
 class PackagesUpdateLocation(APIView):
     def post(self, request):
         vehicle = Vehicle.objects.get(id=int(self.request.query_params.get('vehicle_id', None)))
