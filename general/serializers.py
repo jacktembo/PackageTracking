@@ -5,7 +5,7 @@ from .models import Package, Vehicle, CourierCompany
 
 class PackageSerializer(serializers.ModelSerializer):
     package_tracking_number = serializers.SerializerMethodField(method_name='the_tracking_number')
-    current_coordinates = serializers.SerializerMethodField(method_name='the_converted_coordinates')
+    # current_coordinates = serializers.SerializerMethodField(method_name='the_converted_coordinates')
     balance = serializers.SerializerMethodField(method_name='the_balance')
     vehicle_id = serializers.SerializerMethodField(method_name='the_vehicle_id')
     vehicle_name = serializers.SerializerMethodField(method_name='the_vehicle_name')
