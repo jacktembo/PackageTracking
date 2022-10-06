@@ -33,9 +33,10 @@ class PackageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Package
         fields = [
+            'package_tracking_number',
             'processed_by', 'package_value',
             'vehicle_id', 'vehicle_name', 'company_name',
-            'package_tracking_number', 'balance', 'receiver_name', 'receiver_phone_number', 'sender_phone_number',
+            'balance', 'receiver_name', 'receiver_phone_number', 'sender_phone_number',
             'delivery_town', 'starting_town', 'vehicle', 'number_of_packages',
             'price', 'departure_date', 'departure_time', 'processed_date_time',
             'transit_date_time', 'ready_for_collection_date_time', 'collected_date_time',
