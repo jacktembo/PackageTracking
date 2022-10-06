@@ -59,6 +59,8 @@ class Vehicle(models.Model):
 class Package(models.Model):
     """Package to be tracked"""
     tracking_number = models.CharField(max_length=255, editable=False)
+    package_value = models.IntegerField(default=0.0)
+    processed_by = models.CharField(max_length=255, default='Not Applicable for this package')
     receiver_name = models.CharField(max_length=255)
     receiver_phone_number = models.CharField(max_length=255)
     sender_phone_number = models.CharField(max_length=255)
