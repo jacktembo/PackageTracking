@@ -1,16 +1,18 @@
 import datetime
 
+from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, get_list_or_404
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.decorators import api_view
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from utils import sms
 from .models import Package, Vehicle, CourierCompany
-from .serializers import PackageSerializer, VehicleSerializer, CourierCompanySerializer
+from .serializers import PackageSerializer, VehicleSerializer, CourierCompanySerializer, UserSerializer
 
 today = datetime.datetime.today()
 
@@ -30,7 +32,7 @@ class PackageList(ListCreateAPIView):
     def get_serializer_class(self):
         return PackageSerializer
 
-    filterset_fields = ['vehicle', 'departure_date']
+    filterset_fields = ['vehicle', 'departure_date', 'processed_by']
 
     def create(self, request, *args, **kwargs):
         sender_phone_number = self.request.data['sender_phone_number']
@@ -201,3 +203,13 @@ class Sorting(APIView):
             return Response(PackageSerializer(package.first()).data)
 
 
+class CompanyUsersList(ListAPIView):
+    def get_queryset(self):
+        group = self.request.user.groups.all().first()
+        group_name = group.name
+        company = CourierCompany.objects.get(company_name=group_name)
+        company_name = company.company_name
+        return User.objects.filter(couriercompany__company_name=company_name)
+
+    def get_serializer_class(self):
+        return UserSerializer

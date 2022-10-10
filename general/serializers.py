@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from .models import Package, Vehicle, CourierCompany
@@ -70,4 +71,12 @@ class CourierCompanySerializer(serializers.ModelSerializer):
             'packages_remaining',
             'logo', 'company_name', 'company_phone_number', 'company_email',
             'address', 'all1zed_commission'
+        ]
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'id', 'username', 'first_name', 'last_name', 'email'
         ]
