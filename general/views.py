@@ -209,7 +209,7 @@ class CompanyUsersList(ListAPIView):
         group_name = group.name
         company = CourierCompany.objects.get(company_name=group_name)
         company_name = company.company_name
-        return User.objects.filter(couriercompany__company_name=company_name)
+        return User.objects.filter(groups__in=self.request.user.groups.all())
 
     def get_serializer_class(self):
         return UserSerializer
