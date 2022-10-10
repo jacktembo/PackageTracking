@@ -21,7 +21,11 @@ def index(request):
 
 class PackageList(ListCreateAPIView):
     def get_queryset(self):
-        return Package.objects.filter(vehicle__courier_company__user=self.request.user)
+        group = self.request.user.groups.all().first()
+        group_name = group.name
+        company = CourierCompany.objects.get(company_name=group_name)
+        company_name = company.company_name
+        return Package.objects.filter(vehicle__courier_company__company_name=company_name)
 
     def get_serializer_class(self):
         return PackageSerializer
