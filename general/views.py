@@ -80,7 +80,11 @@ class PackageDetail(RetrieveUpdateDestroyAPIView):
         if self.request.user.username == 'app':
             return Package.objects.all()
         else:
-            return Package.objects.filter(vehicle__courier_company__user=self.request.user)
+            group = self.request.user.groups.all().first()
+            group_name = group.name
+            company = CourierCompany.objects.get(company_name=group_name)
+            company_name = company.company_name
+            return Package.objects.filter(vehicle__courier_company__company_name=company_name)
 
 
 class VehicleList(ListCreateAPIView):
