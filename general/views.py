@@ -120,7 +120,12 @@ class CourierCompanyDetail(RetrieveUpdateDestroyAPIView):
         return CourierCompanySerializer
 
     def get_queryset(self):
-        return CourierCompany.objects.filter(user=self.request.user)
+        group = self.request.user.groups.all().first()
+        group_name = group.name
+        company = CourierCompany.objects.get(company_name=group_name)
+        company_name = company.company_name
+
+        return CourierCompany.objects.filter(company_name=company_name)
 
 
 class TotalSales(APIView):
