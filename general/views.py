@@ -134,28 +134,40 @@ class TotalSales(APIView):
     """
 
     def get(self, request):
+        group = self.request.user.groups.all().first()
+        group_name = group.name
+        company = CourierCompany.objects.get(company_name=group_name)
+        company_name = company.company_name
         vehicle_id = self.request.query_params.get('vehicle_id', None)
         if vehicle_id == None:
             result = Package.objects.filter(departure_date=today,
-                                            vehicle__courier_company__user=self.request.user).aggregate(
+                                            vehicle__courier_company__company_name=company_name).aggregate(
                 Sum('price')).get('price__sum')
             return Response(result)
         else:
-            result = Package.objects.filter(departure_date=today, vehicle__courier_company__user=self.request.user,
+            group = self.request.user.groups.all().first()
+            group_name = group.name
+            company = CourierCompany.objects.get(company_name=group_name)
+            company_name = company.company_name
+            result = Package.objects.filter(departure_date=today, vehicle__courier_company__company_name=company_name,
                                             vehicle__id=int(vehicle_id)).aggregate(Sum('price')).get('price__sum')
             return Response(result)
 
 
 class TotalSalesCount(APIView):
     def get(self, request):
+        group = self.request.user.groups.all().first()
+        group_name = group.name
+        company = CourierCompany.objects.get(company_name=group_name)
+        company_name = company.company_name
         vehicle_id = self.request.query_params.get('vehicle_id', None)
         if vehicle_id == None:
             result = Package.objects.filter(departure_date=today,
-                                            vehicle__courier_company__user=self.request.user).count()
+                                            vehicle__courier_company__company_name=company_name).count()
             return Response(result)
 
         else:
-            result = Package.objects.filter(departure_date=today, vehicle__courier_company__user=self.request.user,
+            result = Package.objects.filter(departure_date=today, vehicle__courier_company__company_name=company_name,
                                             vehicle__id=int(vehicle_id)).count()
             return Response(result)
 
