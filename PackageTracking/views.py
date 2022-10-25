@@ -84,7 +84,9 @@ class TopUpQuery(APIView):
                 plan = PricingPlan.objects.get(id=int(plan_id))
                 courier_company = CourierCompany.objects.filter(user=request.user).first()
                 remaining_packages = courier_company.number_of_packages
-                CourierCompany.objects.filter(user=request.user).first().number_of_packages = remaining_packages + plan.number_of_packages.save()
+                c = CourierCompany.objects.filter(user=request.user).first()
+                c.number_of_packages = remaining_packages + plan.number_of_packages
+                c.save()
                 return Response({'status': 'successful', 'message': 'airtel payment was successful.'})
             else:
                 return Response('Payment was not successful')
