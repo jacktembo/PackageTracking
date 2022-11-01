@@ -1,7 +1,10 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-
+import pytz
 from .models import Package, Vehicle, CourierCompany
+
+utc = pytz.UTC
+from datetime import datetime, timedelta
 
 
 class PackageSerializer(serializers.ModelSerializer):
@@ -11,6 +14,7 @@ class PackageSerializer(serializers.ModelSerializer):
     vehicle_id = serializers.SerializerMethodField(method_name='the_vehicle_id')
     vehicle_name = serializers.SerializerMethodField(method_name='the_vehicle_name')
     company_name = serializers.SerializerMethodField(method_name='the_company_name')
+    in_transit_message = serializers.SerializerMethodField(method_name='the_transit_message')
 
 
     def the_tracking_number(self, package: Package):
@@ -31,6 +35,9 @@ class PackageSerializer(serializers.ModelSerializer):
     def the_company_name(self, package: Package):
         return package.vehicle.courier_company.company_name
 
+    def the_transit_message(self, package: Package):
+        return 'In Transit' if datetime.now().replace(tzinfo=utc) > (datetime(package.departure_date.year, package.departure_date.month, package.departure_date.day) + timedelta(hours=package.departure_time.hour)).replace(tzinfo=utc) else '...'
+
     class Meta:
         model = Package
         fields = [
@@ -42,7 +49,7 @@ class PackageSerializer(serializers.ModelSerializer):
             'price', 'departure_date', 'departure_time', 'processed_date_time',
             'transit_date_time', 'ready_for_collection_date_time', 'collected_date_time',
             'processed_status', 'transit_status', 'ready_for_collection_status',
-            'collected_status', 'current_coordinates', 'transit_message'
+            'collected_status', 'current_coordinates', 'in_transit_message'
         ]
 
 

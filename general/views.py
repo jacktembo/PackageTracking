@@ -5,6 +5,7 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, get_list_or_404, redirect
 from rest_framework import status
+import pytz
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.response import Response
@@ -16,6 +17,7 @@ from .serializers import PackageSerializer, VehicleSerializer, CourierCompanySer
 from django.shortcuts import render
 today = datetime.datetime.today()
 
+utc = pytz.UTC
 
 def index(request):
     if request.method == 'GET':
