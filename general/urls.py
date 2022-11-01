@@ -26,6 +26,7 @@ admin.AdminSite.index_title = 'Welcome To All1Zed Package Tracking System'
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('kazang-dashboard', views.kazang_dashboard, name='kazang-dashboard'),
     path('packages', views.PackageList.as_view()),
     path('packages/<tracking_number>', views.PackageDetail.as_view()),
     path('packages/location/update', views.PackagesUpdateLocation.as_view()),

@@ -1,25 +1,34 @@
 import datetime
-
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, get_list_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404, redirect
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django_filters.rest_framework.backends import DjangoFilterBackend
-from utils import sms
+from utils import sms, kazang
 from .models import Package, Vehicle, CourierCompany
 from .serializers import PackageSerializer, VehicleSerializer, CourierCompanySerializer, UserSerializer
-
+from django.shortcuts import render
 today = datetime.datetime.today()
 
 
 def index(request):
-    return HttpResponse('Welcome To All1Zed Package Tracking')
-
+    if request.method == 'GET':
+        return render(request, 'index.html')
+    else:
+        username = request.POST.get('username', None)
+        password = request.POST.get('password', None)
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('kazang-dashboard')
+        else:
+            return render(request, 'index.html')
 
 class PackageList(ListCreateAPIView):
     def get_queryset(self):
@@ -213,3 +222,11 @@ class CompanyUsersList(ListAPIView):
 
     def get_serializer_class(self):
         return UserSerializer
+
+
+def kazang_dashboard(request):
+    balance = kazang.get_balance()
+    context = {
+        'balance': float(balance) + 320
+    }
+    return render(request, 'kazang_dashboard.html', context)
