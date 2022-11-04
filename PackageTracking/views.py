@@ -95,7 +95,7 @@ class TopUpQuery(APIView):
             r = kazang.mtn_debit_approval(phone_number, amount, reference_number)
             if r.get('response_code', '1') == '0':
                 confirmation_number = r['confirmation_number']
-                approval_confirm = kazang.mtn_debit_confirm(phone_number, amount, confirmation_number)
+                approval_confirm = kazang.mtn_debit_approval_confirm(phone_number, amount, confirmation_number)
                 if approval_confirm.get('response_code', '1') == '0':
                     plan_id = request.data.get('plan_id', None)
                     plan = PricingPlan.objects.get(id=int(plan_id))
