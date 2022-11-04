@@ -1,6 +1,4 @@
 from django.db import models
-from pycparser.c_ast import Default
-
 
 class KazangSession(models.Model):
     """

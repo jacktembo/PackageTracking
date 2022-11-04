@@ -2,7 +2,6 @@ import json
 import secrets
 import string
 from datetime import datetime
-from time import sleep
 
 import requests
 
