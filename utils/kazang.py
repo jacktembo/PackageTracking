@@ -6,8 +6,8 @@ from time import sleep
 
 import requests
 
+from PackageTracking.models import KazangSession
 from . import phone_numbers
-from .models import KazangSession
 
 now = datetime.now().isoformat()
 
