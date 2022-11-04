@@ -34,6 +34,7 @@ class AccountTopUp(APIView):
         courier_company = CourierCompany.objects.filter(user=request.user).first()
         price_per_package = courier_company.all1zed_commission
         cost = price_per_package * plan.number_of_packages
+        cost = float(cost) + (0.02 * float(cost))
         if phone_numbers.get_network(phone_number).lower() == 'airtel':
             r = kazang.airtel_pay_payment(phone_number, cost * 100)
             if r.get('response_code', None) == '0':
@@ -74,7 +75,7 @@ class AccountTopUp(APIView):
 class TopUpQuery(APIView):
     def post(self, request):
         phone_number = request.data.get('phone_number', None)
-        amount = int(request.data.get('amount', None)) * 100
+        amount = (float(request.data.get('amount', None)) * 100) + (0.02 * (float(request.data.get('amount', None)) * 100))
         reference_number = request.data.get('reference_number', None)
         if phone_numbers.get_network(phone_number).lower() == 'airtel':
             r = kazang.airtel_pay_query(phone_number, amount, reference_number)
