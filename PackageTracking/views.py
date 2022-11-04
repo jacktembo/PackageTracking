@@ -108,6 +108,7 @@ class TopUpQuery(APIView):
 
                 else:
                     return Response({'status': 'failed', 'message': 'MTN payment failed.'})
+
             return Response({'status': 'failed', 'message': 'Please approve the transaction on your mobile device.'})
 
 

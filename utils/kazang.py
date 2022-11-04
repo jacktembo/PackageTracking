@@ -3,12 +3,23 @@ import secrets
 import string
 from datetime import datetime
 from time import sleep
-from PackageTracking.models import KazangSession
+
 import requests
 
 from . import phone_numbers
+from .models import KazangSession
 
 now = datetime.now().isoformat()
+
+
+def repeat_five_time(call):
+    global r
+    for i in range(5):
+        r = call
+        if r.json().get('response_code', 0) == '0':
+            break
+
+    return r
 
 base_url = "https://api.kazang.net/apimanager/api_rest/v1/"
 prod_username = "8011819587"
@@ -27,7 +38,8 @@ headers = {
 
 
 def auth_client():
-    r = requests.post(base_url + "authClient", data=json.dumps(auth_data), headers=headers)
+    r1 = requests.post(base_url + "authClient", data=json.dumps(auth_data), headers=headers)
+    r = repeat_five_time(r1)
     return r.json()
 
 
@@ -52,7 +64,8 @@ def get_or_create_session_uuid():
     if db_sessions:
         db_session = KazangSession.objects.order_by('-date_time_created').first().session_uuid
         session_data = {"session_uuid": db_session}
-        products = requests.post(base_url + 'productList', data=json.dumps(session_data), headers=headers)
+        products1 = requests.post(base_url + 'productList', data=json.dumps(session_data), headers=headers)
+        products = repeat_five_time(products1)
         if products.json().get('response_code', False) == '0':
             return db_session
         else:
@@ -84,9 +97,9 @@ default_data = {
     'session_uuid': session_uuid
 }
 
-
 def product_list():
-    r = requests.post(base_url + 'productList', data=json.dumps(data), headers=headers)
+    r1 = requests.post(base_url + 'productList', data=json.dumps(data), headers=headers)
+    r = repeat_five_time(r1)
     products = r.json().get('product_list', None)
     return products
 
@@ -102,6 +115,7 @@ def find_product_from_method_name(method: str):
 
 
 def airtel_pay_payment(phone_number: str, amount):
+    global r
     alphabet = string.digits
     code = ''.join(secrets.choice(alphabet) for i in range(6))
     code2 = ''.join(secrets.choice(alphabet) for i in range(6))
@@ -119,13 +133,17 @@ def airtel_pay_payment(phone_number: str, amount):
     data['wallet_msisdn'] = phone_number
     data['amount'] = amount
     data['request_reference'] = code
-    r = requests.post(base_url + "airtelPayPayment", data=json.dumps(data), headers=headers)
-    assert r.json()['response_code'] == '0'
+    for i in range(5):
+        r1 = requests.post(base_url + "airtelPayPayment", data=json.dumps(data), headers=headers)
+        r = repeat_five_time(r1)
+        if r.json()['response_code'] == '0':
+            break
     confirmation_number = r.json().get('confirmation_number', False)
     data['confirmation_number'] = confirmation_number
     data['request_reference'] = code2
-    confirm = requests.post(base_url + "airtelPayPaymentConfirm", data=json.dumps(data), headers=headers)
-    assert confirm.json()['response_code'] == '0'
+    confirm1 = requests.post(base_url + "airtelPayPaymentConfirm", data=json.dumps(data), headers=headers)
+    confirm = repeat_five_time(confirm1)
+    # assert confirm.json()['response_code'] == '0'
     return confirm.json()
 
 
@@ -138,11 +156,13 @@ def airtel_pay_query(phone_number, amount, airtel_reference):
     data['product_id'] = find_product_from_method_name('airtelPayQuery')['product_id']
     data['wallet_msisdn'] = phone_number
     data['amount'] = amount
-    airtel_pay_query = requests.post(base_url + "airtelPayQuery", data=json.dumps(data), headers=headers)
-    assert airtel_pay_query.json()['response_code'] == '0'
+    airtel_pay_query1 = requests.post(base_url + "airtelPayQuery", data=json.dumps(data), headers=headers)
+    airtel_pay_query = repeat_five_time(airtel_pay_query1)
+    # assert airtel_pay_query.json()['response_code'] == '0'
     data['confirmation_number'] = airtel_pay_query.json().get('confirmation_number', False)
-    airtel_pay_query_confirm = requests.post(base_url + "airtelPayQueryConfirm", data=json.dumps(data), headers=headers)
-    assert airtel_pay_query.json()['response_code'] == '0'
+    airtel_pay_query_confirm1 = requests.post(base_url + "airtelPayQueryConfirm", data=json.dumps(data), headers=headers)
+    airtel_pay_query_confirm = repeat_five_time(airtel_pay_query_confirm1)
+    # assert airtel_pay_query.json()['response_code'] == '0'
     return airtel_pay_query_confirm.json()
 
 
@@ -159,15 +179,17 @@ def zamtel_money_pay(phone_number: str, amount):
     data['msisdn'] = phone_number
     data['amount'] = amount
     data['product_id'] = find_product_from_method_name('zamtelMoneyPay')['product_id']
-    zamtel_money_pay = requests.post(base_url + 'zamtelMoneyPay', data=json.dumps(data), headers=headers)
-    assert zamtel_money_pay.json()['response_code'] == '0'
+    zamtel_money_pay1 = requests.post(base_url + 'zamtelMoneyPay', data=json.dumps(data), headers=headers)
+    zamtel_money_pay = repeat_five_time(zamtel_money_pay1)
+    # assert zamtel_money_pay.json()['response_code'] == '0'
     confirmation_number = zamtel_money_pay.json().get('confirmation_number', False)
     data['confirmation_number'] = confirmation_number
     data['request_reference'] = code2
     data['msisdn'] = phone_number
     data['amount'] = amount
-    zamtel_pay_confirmation = requests.post(base_url + 'zamtelMoneyPayConfirm', data=json.dumps(data), headers=headers)
-    assert zamtel_pay_confirmation.json()['response_code'] == '0'
+    zamtel_pay_confirmation1 = requests.post(base_url + 'zamtelMoneyPayConfirm', data=json.dumps(data), headers=headers)
+    zamtel_pay_confirmation = repeat_five_time(zamtel_pay_confirmation1)
+    # assert zamtel_pay_confirmation.json()['response_code'] == '0'
     return zamtel_pay_confirmation.json()
 
 
@@ -183,7 +205,8 @@ def mtn_debit(phone_number: str, amount: float):
     data['amount'] = amount
     data['product_id'] = find_product_from_method_name('mtnDebit')['product_id']
     data['request_reference'] = code
-    r = requests.post(base_url + 'mtnDebit', data=json.dumps(data), headers=headers)
+    r1 = requests.post(base_url + 'mtnDebit', data=json.dumps(data), headers=headers)
+    r = repeat_five_time(r1)
     return r.json()
 
 
@@ -195,7 +218,8 @@ def mtn_debit_approval(phone_number, amount, supplier_transaction_id):
     data['amount'] = amount
     data['wallet_msisdn'] = phone_number
     data['supplier_transaction_id'] = supplier_transaction_id
-    debit_approval = requests.post(base_url + 'mtnDebitApproval', data=json.dumps(data), headers=headers)
+    debit_approval1 = requests.post(base_url + 'mtnDebitApproval', data=json.dumps(data), headers=headers)
+    debit_approval = repeat_five_time(debit_approval1)
     return debit_approval.json()
 
 
@@ -207,8 +231,11 @@ def mtn_debit_approval_confirm(phone_number, amount, confirmation_number):
     data['product_id'] = find_product_from_method_name('mtnDebitApproval')['product_id']
     data['amount'] = amount
     data['confirmation_number'] = confirmation_number
-    debit_approval_confirm = requests.post(base_url + 'mtnDebitApprovalConfirm', data=json.dumps(data), headers=headers)
+    debit_approval_confirm1 = requests.post(base_url + 'mtnDebitApprovalConfirm', data=json.dumps(data), headers=headers)
+    debit_approval_confirm = repeat_five_time(debit_approval_confirm1)
     return debit_approval_confirm.json()
+
+
 
 
 def mtn_debit_confirm(phone_number, amount, confirmation_number):
@@ -220,32 +247,34 @@ def mtn_debit_confirm(phone_number, amount, confirmation_number):
     data['wallet_msisdn'] = phone_number
     data['amount'] = amount
     data['product_id'] = find_product_from_method_name('mtnDebitConfirm')['product_id']
-    approval = requests.post(base_url + 'mtnDebitApproval', data=json.dumps(data), headers=headers)
+    approval1 = requests.post(base_url + 'mtnDebitApproval', data=json.dumps(data), headers=headers)
+    approval = repeat_five_time(approval1)
     data['confirmation_number'] = approval.json().get('confirmation_number', None)
-    approval_confirm = requests.post(base_url + 'mtnDebitApprovalConfirm', data=json.dumps(data), headers=headers)
+    approval_confirm1 = requests.post(base_url + 'mtnDebitApprovalConfirm', data=json.dumps(data), headers=headers)
+    approval_confirm = repeat_five_time(approval_confirm1)
     return approval_confirm.json()
 
 
-def all1zed_pay_for_bus(customer_phone_number, bus_owner_phone_number, customer_amount, bus_owner_amount):
-    print(mtn_debit(customer_phone_number, customer_amount))
-    print(mtn_cash_in(bus_owner_phone_number, bus_owner_amount))
-
-
-def nfs_cash_in(phone_number, amount):
+def nfs_cash_in(phone_number, amount, product_id=None):
     alphabet = string.digits
     code = ''.join(secrets.choice(alphabet) for i in range(6))
     code2 = ''.join(secrets.choice(alphabet) for i in range(6))
     data = {
         "session_uuid": session_uuid
     }
-    data['product_id'] = '5589'
+    data['product_id'] = '5308'
     data['request_reference'] = code
     data['reference'] = phone_number
     data['amount'] = amount
-    cash_in = requests.post(base_url + 'nfsCashIn', data=json.dumps(data), headers=headers)
-
-    return cash_in.json()
-
+    cash_in1 = requests.post(base_url + 'nfsCashIn', data=json.dumps(data), headers=headers)
+    cash_in = repeat_five_time(cash_in1)
+    data['confirmation_number'] = cash_in.json().get('confirmation_number', False)
+    data['request_reference'] = code2
+    del data['amount']
+    del data['reference']
+    nfs_cash_in_confirm1 = requests.post(base_url + 'nfsCashInConfirm', data=json.dumps(data), headers=headers)
+    nfs_cash_in_confirm = repeat_five_time(nfs_cash_in_confirm1)
+    return nfs_cash_in_confirm.json()
 
 def zamtel_cash_in(phone_number, amount):
     alphabet = string.digits
@@ -258,13 +287,15 @@ def zamtel_cash_in(phone_number, amount):
     data['request_reference'] = code
     data['reference'] = phone_number
     data['amount'] = amount
-    cash_in = requests.post(base_url + 'nfsCashIn', data=json.dumps(data), headers=headers)
+    cash_in1 = requests.post(base_url + 'nfsCashIn', data=json.dumps(data), headers=headers)
+    cash_in = repeat_five_time(cash_in1)
     data['confirmation_number'] = cash_in.json().get('confirmation_number', False)
     data['request_reference'] = code2
     del data['amount']
     del data['reference']
-    nfs_cash_in_confirm = requests.post(base_url + 'nfsCashInConfirm', data=json.dumps(data), headers=headers)
-    return nfs_cash_in_confirm.json()
+    nfs_cash_in_confirm1 = requests.post(base_url + 'nfsCashInConfirm', data=json.dumps(data), headers=headers)
+    nfs_cash_in_confirm = repeat_five_time(nfs_cash_in_confirm1)
+    return  nfs_cash_in_confirm.json()
 
 
 def airtel_cash_in(phone_number, amount):
@@ -278,12 +309,14 @@ def airtel_cash_in(phone_number, amount):
     data['request_reference'] = code
     data['reference'] = phone_number
     data['amount'] = amount
-    cash_in = requests.post(base_url + 'nfsCashIn', data=json.dumps(data), headers=headers)
+    cash_in1 = requests.post(base_url + 'nfsCashIn', data=json.dumps(data), headers=headers)
+    cash_in = repeat_five_time(cash_in1)
     data['confirmation_number'] = cash_in.json().get('confirmation_number', False)
     data['request_reference'] = code2
     del data['amount']
     del data['reference']
-    nfs_cash_in_confirm = requests.post(base_url + 'nfsCashInConfirm', data=json.dumps(data), headers=headers)
+    nfs_cash_in_confirm1 = requests.post(base_url + 'nfsCashInConfirm', data=json.dumps(data), headers=headers)
+    nfs_cash_in_confirm = repeat_five_time(nfs_cash_in_confirm1)
     return nfs_cash_in_confirm.json()
 
 
@@ -308,6 +341,28 @@ def nfs_cash_out(phone_number, amount):
     return cash_out_confirm.json()
 
 
+# def mtn_cash_in(phone_number, amount):
+#     alphabet = string.digits
+#     code = ''.join(secrets.choice(alphabet) for i in range(6))
+#     code2 = ''.join(secrets.choice(alphabet) for i in range(6))
+#     data = {
+#         "session_uuid": session_uuid
+#     }
+#     data['receiving_msisdn'] = phone_number
+#     data['amount'] = amount
+#     data['product_id'] = find_product_from_method_name('mtnCashIn')['product_id']
+#     data['request_reference'] = code
+#     cash_in = requests.post(base_url + 'mtnCashIn', data=json.dumps(data), headers=headers)
+#     assert cash_in.json()['response_code'] == '0'
+#     data['data_reference_number'] = cash_in.json().get('data_reference_number', False)
+#     data['request_reference'] = code2
+#     data['data'] = phone_number
+#     del data['receiving_msisdn']
+#     del data['amount']
+#     cash_in_confirm = requests.post(base_url + 'mtnCashInSubmitData', data=json.dumps(data), headers=headers)
+#     assert cash_in_confirm.json()['response_code'] == '0'
+#     return cash_in_confirm.json()
+
 def mtn_cash_in(phone_number, amount):
     alphabet = string.digits
     code = ''.join(secrets.choice(alphabet) for i in range(6))
@@ -315,20 +370,19 @@ def mtn_cash_in(phone_number, amount):
     data = {
         "session_uuid": session_uuid
     }
-    data['receiving_msisdn'] = phone_number
-    data['amount'] = amount
-    data['product_id'] = find_product_from_method_name('mtnCashIn')['product_id']
+    data['product_id'] = '5360'
     data['request_reference'] = code
-    cash_in = requests.post(base_url + 'mtnCashIn', data=json.dumps(data), headers=headers)
-    assert cash_in.json()['response_code'] == '0'
-    data['data_reference_number'] = cash_in.json().get('data_reference_number', False)
+    data['reference'] = phone_number
+    data['amount'] = amount
+    cash_in1 = requests.post(base_url + 'nfsCashIn', data=json.dumps(data), headers=headers)
+    cash_in = repeat_five_time(cash_in1)
+    data['confirmation_number'] = cash_in.json().get('confirmation_number', False)
     data['request_reference'] = code2
-    data['data'] = phone_number
-    del data['receiving_msisdn']
     del data['amount']
-    cash_in_confirm = requests.post(base_url + 'mtnCashInSubmitData', data=json.dumps(data), headers=headers)
-    assert cash_in_confirm.json()['response_code'] == '0'
-    return cash_in_confirm.json()
+    del data['reference']
+    nfs_cash_in_confirm1 = requests.post(base_url + 'nfsCashInConfirm', data=json.dumps(data), headers=headers)
+    nfs_cash_in_confirm = repeat_five_time(nfs_cash_in_confirm1)
+    return nfs_cash_in_confirm.json()
 
 
 def direct_recharge_airtime(phone_number, amount):
@@ -419,6 +473,7 @@ def mobile_cash_in(phone_number, amount):
         return zamtel_cash_in(phone_number, amount)
     else:
         return 'Invalid phone number'
+
 
 
 def airtel_cash_out(phone_number, amount):
