@@ -78,7 +78,7 @@ class TopUpQuery(APIView):
         reference_number = request.data.get('reference_number', None)
         if phone_numbers.get_network(phone_number).lower() == 'airtel':
             r = kazang.airtel_pay_query(phone_number, amount, reference_number)
-            del r['balance']
+            # del r['balance']
             if r.get('response_code', '1') == '0':
                 plan_id = request.data.get('plan_id', None)
                 plan = PricingPlan.objects.get(id=int(plan_id))
@@ -89,5 +89,5 @@ class TopUpQuery(APIView):
                 c.save()
                 return Response({'status': 'successful', 'message': 'airtel payment was successful.'})
             else:
-                return Response('Payment was not successful')
+                return Response({'status': 'failed', 'message': 'airtel payment failed.'})
 
