@@ -91,3 +91,23 @@ class TopUpQuery(APIView):
             else:
                 return Response({'status': 'failed', 'message': 'airtel payment failed.'})
 
+        elif phone_numbers.get_network(phone_number).lower() == 'mtn':
+            r = kazang.mtn_debit_approval(phone_number, amount, reference_number)
+            if r.get('response_code', '1') == '0':
+                confirmation_number = r['confirmation_number']
+                approval_confirm = kazang.mtn_debit_confirm(phone_number, amount, confirmation_number)
+                if approval_confirm.get('response_code', '1') == '0':
+                    plan_id = request.data.get('plan_id', None)
+                    plan = PricingPlan.objects.get(id=int(plan_id))
+                    courier_company = CourierCompany.objects.filter(user=request.user).first()
+                    remaining_packages = courier_company.number_of_packages
+                    c = CourierCompany.objects.filter(user=request.user).first()
+                    c.number_of_packages = remaining_packages + plan.number_of_packages
+                    c.save()
+                    return Response({'status': 'successful', 'message': 'MTN payment was successful.'})
+
+                else:
+                    return Response({'status': 'failed', 'message': 'MTN payment failed.'})
+            return Response({'status': 'failed', 'message': 'Please approve the transaction on your mobile device.'})
+
+
