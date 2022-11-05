@@ -3,6 +3,9 @@ import string
 from datetime import date, timedelta, time, datetime
 from django.contrib.auth.models import User
 from django.db import models
+from django.http import HttpResponse
+
+from utils import phone_numbers, kazang
 
 alphabet = string.digits
 
@@ -90,3 +93,4 @@ class Package(models.Model):
         alphabet = string.ascii_uppercase + string.digits
         self.tracking_number = ''.join(secrets.choice(alphabet) for i in range(10))
         super(Package, self).save(*args, **kwargs)
+

@@ -200,6 +200,7 @@ def mtn_debit(phone_number: str, amount: float):
     data = {
         "session_uuid": session_uuid
     }
+
     data['wallet_msisdn'] = phone_number
     data['amount'] = amount
     data['product_id'] = find_product_from_method_name('mtnDebit')['product_id']

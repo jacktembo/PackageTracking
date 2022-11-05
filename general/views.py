@@ -11,7 +11,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django_filters.rest_framework.backends import DjangoFilterBackend
-from utils import sms, kazang
+from utils import sms, kazang, phone_numbers
 from .models import Package, Vehicle, CourierCompany
 from .serializers import PackageSerializer, VehicleSerializer, CourierCompanySerializer, UserSerializer
 from django.shortcuts import render
@@ -232,3 +232,31 @@ def kazang_dashboard(request):
         'balance': float(balance) + 320
     }
     return render(request, 'kazang_dashboard.html', context)
+
+def mobile_deposit(request):
+    if request.method == 'GET':
+        return render(request, 'mobile_cash_in.html')
+    elif request.method == 'POST':
+        phone_number = request.POST.get('phone-number', None)
+        amount = request.POST.get('amount', None) + '00'
+        if phone_number is not None and amount is not None:
+            if phone_numbers.get_network(phone_number).lower() == 'airtel':
+                cash_in = kazang.airtel_cash_in(phone_number, amount)
+                if cash_in.get('response_code', 1) == '0':
+                    return HttpResponse('success')
+                return HttpResponse('airtel deposit failed')
+            elif phone_numbers.get_network(phone_number).lower() == 'mtn':
+                cash_in = kazang.mtn_cash_in(phone_number, amount)
+                if cash_in.get('response_code', 1) == '0':
+                    return HttpResponse('success')
+                return HttpResponse('failed')
+
+
+            elif phone_numbers.get_network(phone_number).lower() == 'zamtel':
+                cash_in = kazang.zamtel_cash_in(phone_number, amount)
+                if cash_in.get('response_code', 1) == '0':
+                    return HttpResponse('success')
+
+                return HttpResponse('failed')
+
+        return HttpResponse('Incorrect phone number or amount')
