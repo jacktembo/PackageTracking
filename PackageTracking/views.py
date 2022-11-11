@@ -1,11 +1,12 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.decorators import APIView
+from rest_framework.decorators import APIView, api_view
 from django.contrib.auth import authenticate
 from PackageTracking.models import PricingPlan
 from utils import phone_numbers, kazang, sms
 from general.models import *
+from utils.models import PendingPaymentApproval
 
 
 class PricingPlanView(APIView):
@@ -42,6 +43,13 @@ class AccountTopUp(APIView):
                 r['message'] = 'Please approve the transaction on your phone.'
                 r['status'] = 'successful'
                 r['reference_number'] = r['airtel_reference']
+                PendingPaymentApproval.objects.create(
+                    session_uuid=kazang.session_uuid, product_id='5392',
+                    date_time_created=datetime.now(), phone_number=phone_number,
+                    reference_number=r['airtel_reference'], amount=cost,
+                    plan_id=plan_id, courier_company=courier_company
+                )
+
                 return Response(r)
             else:
                 return Response({'status': 'failed', 'message': 'payment prompt was not sent to a mobile device. Please try again.'})
@@ -53,6 +61,12 @@ class AccountTopUp(APIView):
                 r['message'] = 'Please approve the transaction on your mobile device.'
                 r['status'] = 'successful'
                 r['reference_number'] = r['supplier_transaction_id']
+                PendingPaymentApproval.objects.create(
+                    session_uuid=kazang.session_uuid, product_id='5392',
+                    date_time_created=datetime.now(), phone_number=phone_number,
+                    reference_number=r['airtel_reference'], amount=cost,
+                    plan_id=plan_id, courier_company=courier_company
+                )
                 return Response(r)
 
         elif phone_numbers.get_network(phone_number).lower() == 'zamtel':
@@ -66,6 +80,12 @@ class AccountTopUp(APIView):
             CourierCompany.objects.filter(
                 user=request.user).first().number_of_packages = remaining_packages + plan.number_of_packages.save()
             if r.get('response_code', None) == '0':
+                PendingPaymentApproval.objects.create(
+                    session_uuid=kazang.session_uuid, product_id='5392',
+                    date_time_created=datetime.now(), phone_number=phone_number,
+                    reference_number=r['airtel_reference'], amount=cost,
+                    plan_id=plan_id, courier_company=courier_company
+                )
                 return Response({'status': 'successful', 'message': 'zamtel payment was successful'})
             else:
                 return Response({'status': 'failed', 'message': 'zamtel payment failed.'})
@@ -113,3 +133,53 @@ class TopUpQuery(APIView):
             return Response({'status': 'failed', 'message': 'Please approve the transaction on your mobile device.'})
 
 
+
+@api_view()
+def topup_query_api(request, pending_approval_id):
+    pending = PendingPaymentApproval.objects.get(id=int(pending_approval_id))
+    phone_number = pending.phone_number
+    amount = (float(pending.amount) * 100) + (0.02 * (float(pending.amount) * 100))
+    reference_number = pending.reference_number
+    if phone_numbers.get_network(phone_number).lower() == 'airtel':
+        r = kazang.airtel_pay_query(phone_number, amount, reference_number)
+        # del r['balance']
+        if r.get('response_code', '1') == '0':
+            plan_id = pending.plan_id
+            plan = PricingPlan.objects.get(id=int(plan_id))
+            courier_company = CourierCompany.objects.filter(user=request.user).first()
+            remaining_packages = courier_company.number_of_packages
+            c = CourierCompany.objects.filter(user=request.user).first()
+            c.number_of_packages = remaining_packages + plan.number_of_packages
+            c.save()
+            # return Response({'status': 'successful', 'message': 'airtel payment was successful.'})
+        else:
+            pass
+            # return Response({'status': 'failed', 'message': 'airtel payment failed.'})
+
+    elif phone_numbers.get_network(phone_number).lower() == 'mtn':
+        r = kazang.mtn_debit_approval(phone_number, amount, reference_number)
+        if r.get('response_code', '1') == '0':
+            confirmation_number = r['confirmation_number']
+            approval_confirm = kazang.mtn_debit_approval_confirm(phone_number, amount, confirmation_number)
+            if approval_confirm.get('response_code', '1') == '0':
+                plan_id = pending.plan_id
+                plan = PricingPlan.objects.get(id=int(plan_id))
+                courier_company = CourierCompany.objects.filter(user=request.user).first()
+                remaining_packages = courier_company.number_of_packages
+                c = CourierCompany.objects.filter(user=request.user).first()
+                c.number_of_packages = remaining_packages + plan.number_of_packages
+                c.save()
+                # return Response({'status': 'successful', 'message': 'MTN payment was successful.'})
+
+            else:
+                pass
+                # return Response({'status': 'failed', 'message': 'MTN payment failed.'})
+
+        # return Response({'status': 'failed', 'message': 'Please approve the transaction on your mobile device.'})
+
+
+@api_view()
+def process_pending(request):
+    pendings = PendingPaymentApproval.objects.all()
+    for pending in pendings:
+        topup_query_api(request, pending.id)

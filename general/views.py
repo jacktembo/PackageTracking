@@ -21,16 +21,20 @@ utc = pytz.UTC
 
 def index(request):
     if request.method == 'GET':
-        return render(request, 'index.html')
+        if not request.user.is_authenticated:
+            return render(request, 'index.html')
+        elif request.user.is_authenticated and request.user.is_superuser:
+            return redirect('kazang-dashboard')
     else:
         username = request.POST.get('username', None)
         password = request.POST.get('password', None)
         user = authenticate(username=username, password=password)
-        if user is not None:
+        if user is not None and user.is_superuser:
             login(request, user)
             return redirect('kazang-dashboard')
         else:
             return render(request, 'index.html')
+
 
 class PackageList(ListCreateAPIView):
     def get_queryset(self):
@@ -231,7 +235,10 @@ def kazang_dashboard(request):
     context = {
         'balance': float(balance) + 320
     }
-    return render(request, 'kazang_dashboard.html', context)
+    if request.user.is_superuser:
+        return render(request, 'kazang_dashboard.html', context)
+    return redirect('index')
+
 
 def mobile_deposit(request):
     if request.method == 'GET':

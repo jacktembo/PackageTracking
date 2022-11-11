@@ -391,7 +391,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link sidesthrd" href="">
+                <a class="nav-link sidesthrd" href="{% url 'mobile-deposit' %}">
                     <span class="textside">  Mobile Deposit</span>
                 </a>
             </li>
@@ -414,7 +414,7 @@
 
         <ul class="navbar-nav2 ml-auto">
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome!</a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><a href="{% url 'logout' %}">Logout</a></a>
                 <ul class="dropdown-menu">
                     <li class="resflset"><a href="profile.php"><i class="fa fa-fw fa-cog"></i> Edit profile</a></li>
                     <li class="divider"></li>
