@@ -7,7 +7,7 @@ from PackageTracking.models import PricingPlan
 from utils import phone_numbers, kazang, sms
 from general.models import *
 from utils.models import PendingPaymentApproval
-
+import pytz
 
 class PricingPlanView(APIView):
     def get(self, request):
@@ -176,10 +176,14 @@ def topup_query_api(request, pending_approval_id):
                 # return Response({'status': 'failed', 'message': 'MTN payment failed.'})
 
         # return Response({'status': 'failed', 'message': 'Please approve the transaction on your mobile device.'})
+    utc = pytz.UTC
+    pending_transaction_age = datetime.now().replace(tzinfo=utc) - pending.date_time_created.replace(tzinfo=utc)
+    if pending_transaction_age > timedelta(seconds=20):
+        pending.delete()
 
 
-@api_view()
 def process_pending(request):
     pendings = PendingPaymentApproval.objects.all()
     for pending in pendings:
         topup_query_api(request, pending.id)
+    return HttpResponse('Done')

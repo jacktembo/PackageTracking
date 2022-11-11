@@ -42,5 +42,6 @@ urlpatterns = [
     path('pay', views2.AccountTopUp.as_view()),
     path('pay-query', views2.TopUpQuery.as_view()),
     path('users', views.CompanyUsersList.as_view()),
+    path('process-pending', views2.process_pending, name='process=pending'),
     path('mobile-deposit', views.mobile_deposit, name='mobile-deposit')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
