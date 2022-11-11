@@ -169,7 +169,6 @@ SIMPLE_JWT = {
 
 DJOSER = {
     'a': 'b'
-
 }
 
 CORS_ALLOW_ALL_ORIGINS = True

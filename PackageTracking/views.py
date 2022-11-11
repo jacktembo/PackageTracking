@@ -134,7 +134,7 @@ class TopUpQuery(APIView):
 
 
 
-@api_view()
+
 def topup_query_api(request, pending_approval_id):
     pending = PendingPaymentApproval.objects.get(id=int(pending_approval_id))
     phone_number = pending.phone_number
