@@ -1,23 +1,24 @@
 import datetime
+import pytz
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, get_list_or_404, redirect
+from django.shortcuts import redirect
+from django.shortcuts import render
 from rest_framework import status
-import pytz
-from rest_framework.decorators import api_view
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django_filters.rest_framework.backends import DjangoFilterBackend
+
 from utils import sms, kazang, phone_numbers
 from .models import Package, Vehicle, CourierCompany
 from .serializers import PackageSerializer, VehicleSerializer, CourierCompanySerializer, UserSerializer
-from django.shortcuts import render
+
 today = datetime.datetime.today()
 
 utc = pytz.UTC
+
 
 def index(request):
     if request.method == 'GET':
@@ -202,7 +203,8 @@ class Sorting(APIView):
         destination_town = package.first().delivery_town
         if town is not None:
             if town.lower() == destination_town.lower():
-                package.update(transit_status=False, ready_for_collection_status=True, transit_message=f'ready for collection at {town} town')
+                package.update(transit_status=False, ready_for_collection_status=True,
+                               transit_message=f'ready for collection at {town} town')
                 message = f'Dear Customer, your package with Tracking No. {tracking_number} is ready for collection at {town} station. Thank you for choosing {package.first().vehicle.courier_company} courier.'
                 sms.send_sms(receiver_phone_number, message)
                 return Response(PackageSerializer(package.first()).data, status=status.HTTP_200_OK)
@@ -233,7 +235,7 @@ class CompanyUsersList(ListAPIView):
 def kazang_dashboard(request):
     balance = kazang.get_balance()
     context = {
-        'balance': float(balance) + 320
+        'balance': float(balance) + 330
     }
     if request.user.is_superuser:
         return render(request, 'kazang_dashboard.html', context)
@@ -241,29 +243,31 @@ def kazang_dashboard(request):
 
 
 def mobile_deposit(request):
-    if request.method == 'GET':
-        return render(request, 'mobile_cash_in.html')
-    elif request.method == 'POST':
-        phone_number = request.POST.get('phone-number', None)
-        amount = request.POST.get('amount', None) + '00'
-        if phone_number is not None and amount is not None:
-            if phone_numbers.get_network(phone_number).lower() == 'airtel':
-                cash_in = kazang.airtel_cash_in(phone_number, amount)
-                if cash_in.get('response_code', 1) == '0':
-                    return HttpResponse('success')
-                return HttpResponse('airtel deposit failed')
-            elif phone_numbers.get_network(phone_number).lower() == 'mtn':
-                cash_in = kazang.mtn_cash_in(phone_number, amount)
-                if cash_in.get('response_code', 1) == '0':
-                    return HttpResponse('success')
-                return HttpResponse('failed')
+    if request.user.is_superuser:
+        if request.method == 'GET':
+            return render(request, 'mobile_cash_in.html')
+        elif request.method == 'POST':
+            phone_number = request.POST.get('phone-number', None)
+            amount = request.POST.get('amount', None) + '00'
+            if phone_number is not None and amount is not None:
+                if phone_numbers.get_network(phone_number).lower() == 'airtel':
+                    cash_in = kazang.airtel_cash_in(phone_number, amount)
+                    if cash_in.get('response_code', 1) == '0':
+                        return HttpResponse('success')
+                    return HttpResponse('airtel deposit failed')
+                elif phone_numbers.get_network(phone_number).lower() == 'mtn':
+                    cash_in = kazang.mtn_cash_in(phone_number, amount)
+                    if cash_in.get('response_code', 1) == '0':
+                        return HttpResponse('success')
+                    return HttpResponse('failed')
 
+                elif phone_numbers.get_network(phone_number).lower() == 'zamtel':
+                    cash_in = kazang.zamtel_cash_in(phone_number, amount)
+                    if cash_in.get('response_code', 1) == '0':
+                        return HttpResponse('success')
 
-            elif phone_numbers.get_network(phone_number).lower() == 'zamtel':
-                cash_in = kazang.zamtel_cash_in(phone_number, amount)
-                if cash_in.get('response_code', 1) == '0':
-                    return HttpResponse('success')
+                    return HttpResponse('failed')
 
-                return HttpResponse('failed')
+            return HttpResponse('Incorrect phone number or amount')
 
-        return HttpResponse('Incorrect phone number or amount')
+    return HttpResponse('You are not authorised to access this page!')

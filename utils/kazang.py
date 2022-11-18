@@ -496,3 +496,11 @@ def airtel_cash_out(phone_number, amount):
     # cash_out_confirm = requests.post(base_url + 'nfsATMCashOutSubmitData', data=json.dumps(data), headers=headers)
     # return cash_out_confirm.json()
     return cash_out.json()
+
+
+def transaction_history_query(session_uuid_to_query=session_uuid):
+    data = {
+        "session_uuid_to_query": session_uuid
+    }
+    history = requests.post(base_url + 'transactionHistoryQuery', headers=headers, data=json.dumps(data))
+    print(r.json())
