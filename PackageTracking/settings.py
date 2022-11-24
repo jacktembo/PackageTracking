@@ -93,7 +93,7 @@ dev_db = {
 }
 prod_db = {
     'default': {
-        'HOST': 'server.all1zed.com',
+        'HOST': '165.140.71.170',
         'NAME': 'allzedco_packages',
         'ENGINE': 'mysql.connector.django',
         'USER': 'allzedco_root',

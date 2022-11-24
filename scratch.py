@@ -1,3 +1,3 @@
-from utils.kazang import transaction_history_query
+from utils.sms import send_sms
 
-print(transaction_history_query())
+send_sms('0976637416', 'Hey Emmanuel, This is Jack Tembo Testing sms')

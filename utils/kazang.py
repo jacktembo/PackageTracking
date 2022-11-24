@@ -504,3 +504,4 @@ def transaction_history_query(session_uuid_to_query=session_uuid):
     }
     history = requests.post(base_url + 'transactionHistoryQuery', headers=headers, data=json.dumps(data))
     print(r.json())
+    
