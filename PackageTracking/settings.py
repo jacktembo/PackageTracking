@@ -97,8 +97,8 @@ prod_db = {
         'PORT': '8000',
         'NAME': 'packages',
         'ENGINE': 'mysql.connector.django',
-        'USER': 'All1Zed',
-        'PASSWORD': 'Zambia2023!',
+        'USER': 'root',
+        'PASSWORD': 'Root2023!',
         'OPTIONS': {
             'autocommit': True,
         },
