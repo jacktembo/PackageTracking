@@ -93,9 +93,9 @@ dev_db = {
 }
 prod_db = {
     'default': {
-        'HOST': '66.29.131.76',
-        'PORT': '8000',
-        'NAME': 'packages',
+        # 'HOST': '66.29.131.76',
+        # 'PORT': '8000',
+        'NAME': 'all1zed_packages',
         'ENGINE': 'mysql.connector.django',
         'USER': 'root',
         'PASSWORD': 'Root2023!',
