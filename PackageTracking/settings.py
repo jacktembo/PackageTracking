@@ -97,7 +97,7 @@ prod_db = {
         # 'PORT': '8000',
         'NAME': 'all1zed_packages',
         'ENGINE': 'mysql.connector.django',
-        'USER': 'root',
+        'USER': 'all1zed_root',
         'PASSWORD': 'Root2023!',
         'OPTIONS': {
             'autocommit': True,
