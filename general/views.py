@@ -65,7 +65,7 @@ class PackageList(ListCreateAPIView):
         company = vehicle.courier_company
         if company.number_of_packages > 1:
             company_name = vehicle.courier_company.company_name
-            receiver_message = f"Dear {receiver_name}, your package has been received by {company_name} at {starting_town} station and processed " \
+            receiver_message = f"Dear {receiver_name}, your package has been received by {company_name} Courier at {starting_town} station and processed " \
                                f"for dispatch. Tracking No. {tracking_number} Courier charge K{price}. Check your package status at https://packages.all1zed.com. "
             sender_message = f"Dear Customer, the package you are sending has been processed " \
                              f"for dispatch. Tracking No. {tracking_number} Courier charge K{price}. Check your package status at https://packages.all1zed.com. "

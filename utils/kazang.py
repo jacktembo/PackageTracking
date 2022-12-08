@@ -96,6 +96,7 @@ default_data = {
     'session_uuid': session_uuid
 }
 
+
 def product_list():
     r1 = requests.post(base_url + 'productList', data=json.dumps(data), headers=headers)
     r = repeat_five_time(r1)

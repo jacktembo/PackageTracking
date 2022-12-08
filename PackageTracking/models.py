@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class KazangSession(models.Model):
     """
     Kazang (Content Ready Session).
