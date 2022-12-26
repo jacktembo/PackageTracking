@@ -235,7 +235,7 @@ class CompanyUsersList(ListAPIView):
 def kazang_dashboard(request):
     balance = kazang.get_balance()
     context = {
-        'balance': float(balance)
+        'balance': float(balance) + 80
     }
     if request.user.is_superuser:
         return render(request, 'kazang_dashboard.html', context)

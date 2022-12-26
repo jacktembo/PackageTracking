@@ -43,3 +43,4 @@ class PricingPlan(models.Model):
 
     def __str__(self):
         return self.tier_name
+
