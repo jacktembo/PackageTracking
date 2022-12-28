@@ -86,7 +86,7 @@ class Package(models.Model):
     current_coordinates = models.CharField(max_length=255, default="0.0, 0.0")
     previous_town = models.CharField(max_length=255, default='...')
     starting_town_coordinates = models.CharField(max_length=255, default="0.0, 0.0")
-    destination_town_coordinates = models.CharField(max_length=255, default="0.0, 0.0")
+    delivery_town_coordinates = models.CharField(max_length=255, default="0.0, 0.0")
 
     def __str__(self):
         return f"{self.tracking_number} ---> {self.starting_town} - {self.delivery_town}"
