@@ -49,7 +49,8 @@ class PackageSerializer(serializers.ModelSerializer):
             'price', 'departure_date', 'departure_time', 'processed_date_time',
             'transit_date_time', 'ready_for_collection_date_time', 'collected_date_time',
             'processed_status', 'transit_status', 'ready_for_collection_status',
-            'collected_status', 'current_coordinates', 'in_transit_message'
+            'collected_status', 'current_coordinates', 'in_transit_message',
+            'starting_town_coordinates', 'destination_town_coordinates',
         ]
 
 
